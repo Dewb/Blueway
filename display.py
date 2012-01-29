@@ -13,7 +13,9 @@ def connect(ip, port=6038):
    return sock
 
 def make_sockets(Ds):
-    return [connect('10.32.0.{0}'.format(i)) for i in Ds];
+    r= [connect('10.32.0.{0}'.format(i)) for i in Ds];
+    r = [connect('192.168.0.198') for i in Ds]
+    return r
 
 def display(data, sock, chan=1):
    xmit = zeros(174, 'ubyte')
