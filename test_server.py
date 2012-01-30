@@ -14,7 +14,7 @@ import colormap;
 import time as clock;
 from numpy import shape,zeros,minimum,maximum,ravel,array;
 import threading, socket, re, struct, hashlib, json, sys
-import optparse, colorsys, random,webbrowser
+import optparse, colorsys, random,webbrowser, select, os
 from itertools import izip
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -99,7 +99,7 @@ class WebSocketRenderer(WebSocketServer):
         c_pend = 0
         cpartial = ""
         rlist = [self.client]
-	print self.client
+
         while True:
             wlist = []
 
@@ -126,14 +126,16 @@ class RenderThread():
     """Renders frame data over a websocket.
         Port: Websocket listen port
     """
-    def __init__(self,opts):
-        self.opts = opts
-        self.connection_thread = threading.Thread(target=self.handle_connections)
+    def __init__(self,server):
+	self.SocketServer = server
+        self.connection_thread = threading.Thread(target=self.handle_renders)
         self.connection_thread.daemon = True
         self.connection_thread.start()
 
-    def handle_connections(self):
-        self.server = WebSocketRenderer(**self.opts.__dict__)
+    def handle_renders(self):
+        while True:
+            self.render(SCREEN,clock.time())
+            clock.sleep(1)
     
     def render(self, lightSystem, currentTime=clock.time()*1000):
         json_frame = [0]*len(lightSystem)
@@ -268,10 +270,8 @@ if __name__ == '__main__':
     opts.web = './static/'  #changes directory to here
     print opts.__dict__
     
-    w=RenderThread(opts)
+    w=WebSocketRenderer(**opts.__dict__)
+    r=RenderThread(w)
     s=SimpleWebserver(hostname,port)
     #webbrowser.open('http://'+hostname+':'+str(port))
-    while True:
-        w.render(SCREEN,clock.time())
-        clock.sleep(1)
-    print 'done'
+    w.start_server()
