@@ -2,9 +2,12 @@
 <head>
 <title>SmootLight</title>
 <style>
-	#connection {
-		text-color:white;
-	}
+    #connection,#framerate {
+        color:white;
+    }
+    body {
+        background-color: #222222;               
+    }
 </style>
 <script>
 var websocket_address = "ws://localhost:8000";
@@ -30,8 +33,20 @@ window.onload = function() {
 };
 
 function connect() {
-  ws = new WebSocket(websocket_address);
-  
+  if (window.MozWebSocket)
+  {
+    ws = new MozWebSocket(websocket_address);
+  }
+  else if (window.WebSocket)
+  {
+    ws = new WebSocket(websocket_address);
+  }
+  else 
+  {
+    document.getElementById('main').innerHTML="<div id='connection'>websockets not supported</div>";
+    return(-1);
+  }
+
   ws.onopen = function() {
     document.getElementById('connection').innerHTML = 'Status: connected';
   }
@@ -105,7 +120,7 @@ function blank() {
 </script>
 </head>
 
-<body bgcolor='black'>
+<body id='main'>
   <canvas id='canvas' style='margin: 50px 25px;' width='800px' height='200px'></canvas>
   <div id='connection'></div>
   <div id='framerate'></div>

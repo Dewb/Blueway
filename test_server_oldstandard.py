@@ -13,8 +13,11 @@ Copyright (c) 2012 CEMMI. All rights reserved.
 import colormap;
 import time as clock;
 from numpy import shape,zeros,minimum,maximum,ravel,array;
-import threading, socket, re, struct, hashlib, json, sys, colorsys, random, webbrowser
+import threading, socket, re, struct, hashlib, json, sys, colorsys, random,webbrowser
 from itertools import izip
+from SocketServer import ThreadingMixIn
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
 
 queue = []
 queueLock = threading.Lock()
@@ -111,10 +114,12 @@ class WebsocketRenderer():
     def handle_connections(self):
         while True:
             client, addr = self.sock.accept()
+
             print 'Accepted websocket connection from %s' % str(addr)
             header = ''
             while not re.search("\r?\n\r?\n.{8}", header): # Receive headers + 8 bytes data
                 header += client.recv(1024)
+                print header
             
             key1 = re.search("Sec-WebSocket-Key1: (.*)$", header, re.M).group(1)
             key2 = re.search("Sec-WebSocket-Key2: (.*)$", header, re.M).group(1)
@@ -131,7 +136,7 @@ class WebsocketRenderer():
 
             s = struct.pack("!II", n1, n2) + data
             respkey = hashlib.md5(s).digest()
-            
+            print respkey 
             if self.orig_port == 80:
                 origin = 'http://'+self.hostname
             else:
@@ -146,7 +151,6 @@ class WebsocketRenderer():
                     str(self.port)+"/\r\n" + \
                 "Sec-WebSocket-Protocol: ledweb\r\n\r\n" + \
                 respkey + "\r\n"
-
             client.send(resp)
             self.clients_lock.acquire()
             self.clients.append(client)
@@ -207,6 +211,7 @@ class WebHandler(object):
 
         return json.dumps(dict(success=True))
 
+#this is unused
 class Webserver: 
     def __init__(self,hostname,port):
         urls = ('/(.*)', 'WebHandler')
@@ -229,14 +234,89 @@ class Webserver:
         # 
 
 
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+class SimpleWebserver(ThreadingHTTPServer): 
+    def __init__(self,hostname,port):
+	self.server = ThreadingHTTPServer((hostname,int(port)),MyHandler)
+	print 'started httpserver...'
+        server_thread = threading.Thread(target=self.run)
+        server_thread.daemon = True
+        server_thread.start()
+        # 
+        #     def sensingLoop(self):
+    def run(self):
+        running = True
+        try:
+            while running:
+                self.server.handle_request() # blocks until request 
+        except KeyboardInterrupt:
+            print '^C received, shutting down server'
+            self.server.socket.close()
+        finally:
+            print 'Shutting down server'
+            self.server.socket.close()
+
+
+class MyHandler(BaseHTTPRequestHandler):
+    def log_message(self, format, *args):
+        pass
+    def wwrite(self,data,line_break = None):
+        if line_break != None:
+            self.wfile.write(data + line_break) # could be <br> or \n
+        else:
+            self.wfile.write(data)
+    def tag(self, text, tag = 'html'):
+        return "<{0}>{1}</{0}>".format(tag,text)
+ 
+    def hwrite(self,data):
+        self.wwrite(self.tag(data),None)
+    def do_GET(self):
+        wwrite=self.wwrite
+        hwrite=self.hwrite
+        try:
+            if self.path.startswith("/static/"):
+		f = open('.'+self.path,"r")
+                self.send_response(200)
+                self.send_header('Content-type','text/html; charset=utf-8')
+                self.end_headers() 
+                self.wfile.write(f.read())
+		f.close()
+            elif self.path.strip('/') == '':
+                self.send_response(301)
+                self.send_header('Location','/static/index.html')
+                self.end_headers()
+            else:
+                self.send_response(404)
+        except IOError:
+            self.send_error(404,'File Not Found: %s' % self.path)
+     ## in case post is needed, use the following (from Jon Berg , turtlemeat.com)
+     #
+     # def do_POST(self):
+     #     global rootnode
+     #     try:
+     #         ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+     #         if ctype == 'multipart/form-data':
+     #             query=cgi.parse_multipart(self.rfile, pdict)
+     #         self.send_response(301)
+             
+     #         self.end_headers()
+     #         upfilecontent = query.get('upfile')
+     #         print "filecontent", upfilecontent[0]
+     #         self.wfile.write("<HTML>POST OK.<BR><BR>");
+     #         self.wfile.write(upfilecontent[0]);
+             
+     #     except :
+     #         pass
+
+
 if __name__ == '__main__':
     
     hostname = 'localhost'
     port = '8080'
     w=WebsocketRenderer(hostname,'index.html',port,8000)
-    #s=Webserver(hostname,port)
+    s=SimpleWebserver(hostname,port)
     #webbrowser.open('http://'+hostname+':'+str(port))
-
     while True:
         w.render(SCREEN,clock.time())
         clock.sleep(1)
