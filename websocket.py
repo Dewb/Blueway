@@ -797,7 +797,8 @@ Sec-WebSocket-Accept: %s\r
         lsock = self.socket(self.listen_host, self.listen_port)
 
         if self.daemon:
-            self.daemonize(keepfd=lsock.fileno(), chdir=self.web)
+            print "Sorry, disabled daemon due to threading. change architecture to fix"
+#            self.daemonize(keepfd=lsock.fileno(), chdir=self.web)
 
         self.started()  # Some things need to happen after daemonizing
 
