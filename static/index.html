@@ -17,7 +17,7 @@
 	
 	<script>
 	var uri = "ws://localhost:8000";
-	var circular_pixels = true; /* False for square */  
+	var circular_pixels = false; /* False for square */  
 
 	var canvas;
 	var ctx;
@@ -88,7 +88,7 @@
 			var data = JSON.parse(data);
 			window.data =data
 			if (data['status'] == 'ok') {
-//				blank();
+				blank();
 				var size = data['size'];
 				var frame = data['frame'];
 
@@ -99,7 +99,7 @@
 
 				var pixelWidth = xf;
 				var pixelHeight = yf;
-				var pixelRadius = Math.min(xf, yf) / 2.0;
+				var pixelRadius = Math.min(xf, yf) / 1.0;
 
 				for (var i = 0; i < frame.length; i++) {
 					var pos = frame[i][0];

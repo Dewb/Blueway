@@ -4,71 +4,58 @@ import socket
 import sys
 import colormap
 from random import random as randomF
-from numpy import shape,zeros,minimum,maximum,ravel,array
+from numpy import shape,zeros,minimum,maximum,ravel,array,ones
 
 import web_server
 s=web_server.WebScreen()
 x_space = 10
 y_space = 10
+offset=[10,10]
 between_chains = 13
 def make_sockets(Ds):
     return range(len(Ds))
 
-Ds = ['3','4','5','6','12']#,'13','14','36','19','20','15','16'];
+Ds = ['3','4']#,'5','6','12','13','14','36','19','20','15','16'];
 mapping = [11,10,7,5,2,1,3,4,13,16,15,14,9,12,8,6,24,23,21,22,18,20,17,19];
 sockets = make_sockets(Ds);
 
 locs = []
+x=0
+y=0
 for j in range(len(sockets)):
-    for i in range(50):
-        for chan in [1,2]:
-             x=100+i*x_space
-             y=10+(chan-1)*y_space + j*(between_chains)
-             locs.append([x,y])
+    for chan in [1,2]:
+        for i in range(50):
+            x=offset[0]+i*x_space
+            y=offset[1]+(chan-1)*y_space + j*(between_chains)
+            locs.append([x,y])
 
-s.setup_screen([0,0,1000,200],locs)   
+s.setup_screen([0,0,x+offset[0]*2,y+offset[1]*2],locs)   
 
 def floatToIntColor(rgb):
-    rgb[0] = int(rgb[0]*256 + .5)
-    rgb[1] = int(rgb[1]*256 + .5)
-    rgb[2] = int(rgb[2]*256 + .5)
-    return safeColor(rgb)
+    a=(rgb*255+.5).round()
+    a[a>255] = 255
+    a[a<0] = 0
+    return a
 
-def safeColor(c):
-    """Ensures that a color is valid"""
-    c[0] = c[0] if c[0] < 255 else 255
-    c[1] = c[1] if c[1] < 255 else 255
-    c[2] = c[2] if c[2] < 255 else 255
-    return c
-    
 def randomBrightColor():
     hue = randomF()
     sat = randomF()/2.0 + .5
     val = 1.0
     hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
-    return array(floatToIntColor(ret))
+    ret = array([hue, sat, val])
+    return floatToIntColor(ret)
 
 def randomDimColor(value):
     hue = randomF()
     sat = randomF()/2.0 + .5
     val = value
     hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
+    ret = array([hue, sat, val])
     return floatToIntColor(ret)    
     
 
 def display(data, sock, chan=1):
-   pixels = zeros([50,3])
-   for i in range(50):
-      (r,g,b)=data[i*3:(i*3+3)]
-      pixels[i,:]=floatToIntColor([r,g,b])
-   return pixels
-      # def display(data, sock, chan=1):
-      #    xmit = zeros(174, 'ubyte')
-      #    xmit[:8], xmit[20:24] = [4, 1, 220, 74, 1, 0, 8, 1], [150, 0, 255, 15]
-      #    xmit[16], xmit[24:] = chan, minimum(maximum(256 * ravel(data), 0), 255)
-      #    sock.sendall(xmit)
+   return floatToIntColor(data).reshape(50,3)
 
 def displayi(data,sock,chan=1,CM=colormap.MATLAB_COLORMAP):
    return display(colormap.i2c(data,CM),sock,chan)
@@ -85,12 +72,12 @@ def imdisplay(data,socks,mapping):
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
     sz = len(socks);
-    px = zeros([100*sz,3])
+    px = ones([100*sz,3])*255
     for i in range(0,sz):
       p=displayi(data[:,i],socks[i],1,CM)
       px[i*50:i*50+50,:]=p
       p=displayi(data[:,i+1],socks[i],2,CM)
-      px[i*50+50:i*50+100,:]=p
+      px[i*50+100:i*50+150,:]=p
 #      s.setup_screen([0,0,x_space*50*sz,y_space*2],lc)   
     s.render(px)
 

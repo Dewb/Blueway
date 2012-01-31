@@ -117,7 +117,10 @@ class WebSocketRenderer(WebSocketServer):
         for i in range(len(self.queues)):
             q,active =self.queues[i]
             if active.value:
-                q.put(data)
+                try:
+                    q.put(data)
+                except IOError:
+                    toremove.append(i)
             else:
                 toremove.append(i)
         for i in range(len(toremove)):
