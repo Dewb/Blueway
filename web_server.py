@@ -46,7 +46,7 @@ class WebScreen:
         #magick happens here:
         self.web_sock=WebSocketRenderer(**opts)
         # this can go away eventually?
-        self.page_serve=SimpleWebserver(hostname,port)
+        #self.page_serve=SimpleWebserver(hostname,port)
         #webbrowser.open('http://'+hostname+':'+str(port))
         self.renderer=RenderThread(self.web_sock)
 
