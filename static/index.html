@@ -16,6 +16,7 @@
 	</style>
 	
 	<script>
+
 	var uri = "ws://localhost:8000";
 	var circular_pixels = false; /* False for square */  
 
@@ -83,10 +84,9 @@
 			}*/
 			console.log("<< WebSockets.onerror");
 		});
-
 		handleMessage = function(data) {
 			var data = JSON.parse(data);
-			window.data =data
+			//window.data =data
 			if (data['status'] == 'ok') {
 				blank();
 				var size = data['size'];
@@ -136,7 +136,7 @@
 				$D('framerate').innerHTML = '';
 				ws.close();
 			}
-		};
+		}
 	}
 
 	function blank() {

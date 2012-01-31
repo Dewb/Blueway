@@ -14,7 +14,7 @@ import colormap;
 import time as clock;
 from numpy import shape,zeros,minimum,maximum,ravel,array, random;
 import threading, socket, re, struct, hashlib, json, sys
-import optparse, colorsys, webbrowser, select, os
+import optparse, colorsys,select, os
 from itertools import izip
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer

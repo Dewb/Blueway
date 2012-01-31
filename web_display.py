@@ -7,7 +7,12 @@ from random import random as randomF
 from numpy import shape,zeros,minimum,maximum,ravel,array,ones
 
 import web_server
+import webbrowser
+
+webbrowser.open('http://localhost:8000/')
+
 s=web_server.WebScreen()
+
 x_space = 10
 y_space = 10
 offset=[10,10]
