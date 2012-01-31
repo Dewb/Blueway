@@ -1,3 +1,6 @@
 [submodule "websockify"]
 	path = websockify
 	url = git://github.com/kanaka/websockify.git
+[submodule "cruftleds"]
+	path = cruftleds
+	url = git@github.com:CEMMI-org/cruftleds.git

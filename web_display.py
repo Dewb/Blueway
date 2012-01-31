@@ -6,42 +6,28 @@ import colormap;
 from numpy import shape,zeros,minimum,maximum,ravel;
 
 import web_server
+s=WebScreen(opts,args)
+x_space = 24
+y_space = 24
 
-def connect(ip, port=6038):
-   print "you should not call this"
-   sock = socket(AF_INET, SOCK_DGRAM, 0)
-   sock.connect((ip, port))
-   return sock
-
-#def make_sockets(Ds):
-#    return [connect('10.32.0.{0}'.format(i)) for i in Ds];
 def make_sockets(Ds):
-    return [0]
-    print "I don't do anything"
-    HOST, PORT = "localhost", 9999
-    sys.stderr.write("Warning: Sim mode only accepts 1 ip address\n")
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, PORT))
-    return [sock]
+    return range(len(Ds))
 
 def display(data, sock, chan=1):
-   sys.stdout.write("printing LEDs.html\n")
-   f=open("LEDs.html", "w")
-   f.write(HTML_HEAD)
+   locs = []
+   pixels = []
    for i in range(50):
       (r,g,b)=data[i*3:(i*3+3)]
-      x=30+30 * (i%5)
-      y=30+30 * (i/5)
-      hexcolor = '#%02x%02x%02x' % (r,g,b)
-      f.write(""" 
-ctx.fillStyle="%s";
-ctx.beginPath();
-ctx.arc(%d,%d,15,0,Math.PI*2,true);
-ctx.closePath();
-ctx.fill();""" % (hexcolor, x, y))
-   f.write(HTML_FOOT)
-   f.close()
-
+      x=i*x_space+sock*(50*xspace)
+      y=(chan-1)*y_space
+      locs.append([x,y])
+      pixels.append((r,g,b))
+   setup_screen([0,0,x,y],locs,pixels)   
+      # def display(data, sock, chan=1):
+      #    xmit = zeros(174, 'ubyte')
+      #    xmit[:8], xmit[20:24] = [4, 1, 220, 74, 1, 0, 8, 1], [150, 0, 255, 15]
+      #    xmit[16], xmit[24:] = chan, minimum(maximum(256 * ravel(data), 0), 255)
+      #    sock.sendall(xmit)
 
 def displayi(data,sock,chan=1,CM=colormap.MATLAB_COLORMAP):
    display(colormap.i2c(data,CM),sock,chan)
@@ -57,5 +43,13 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
    for i in range(0,sz):
      displayi(data[:,mapping[2*i]-1],socks[i],1,CM)
      displayi(data[:,mapping[2*i+1]-1],socks[i],2,CM)
+
+
+ def teh_displayi(data,CM=colormap.MATLAB_COLORMAP):
+ 	imdisplayi(data,sockets,mapping,CM);
+
+ def teh_display(data):
+ 	imdisplay(data,sockets,mapping);
+
 
 

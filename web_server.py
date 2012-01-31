@@ -97,6 +97,14 @@ class WebScreen:
         #                       (35, 9, 0),(60, 16, 0),(90, 24, 0),(115, 31, 0),(161, 47, 0),(161, 48, 0), (141, 43, 0),
         #                       (107, 33, 0),(71, 23, 0),(0, 0, 0)]]
 
+    def setup_screen(self,size,locs,pixels = None):
+        self.size = size
+        self.locs = locs
+        if pixels == None:
+            self.pixels = [randomBrightColor() for i in self.locs]
+        else:
+            self.pixels = pixels
+
     def render(self):
         self.renderer.render(self)
         
