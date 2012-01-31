@@ -54,14 +54,11 @@
 			var str = ws.rQshiftStr();
 			handleMessage(str)
 			//message("Received message '" + str + "'");
-			//console.log("<< WebSockets.onmessage");
 		});
 		ws.on('open', function(e) {
 			console.log(">> WebSockets.onopen");
 			//echo_ref = setInterval(send_msg, echoDelay);
 			$D('connection').innerHTML = 'Status: connected';
-
-			console.log("<< WebSockets.onopen");
 		});
 		ws.on('close', function(e) {
 			console.log(">> WebSockets.onclose");
@@ -72,17 +69,10 @@
 */
 			$D('connection').innerHTML = 'Status: disconnected';
 			blank();
-			setTimeout(connect, 2000);
-			
-			console.log("<< WebSockets.onclose");
+			setTimeout(connect, 3000);
 		});
 		ws.on('error', function(e) {
 			console.log(">> WebSockets.onerror");
-			/*if (echo_ref) {
-				clearInterval(echo_ref);
-				echo_ref = null;
-			}*/
-			console.log("<< WebSockets.onerror");
 		});
 		handleMessage = function(data) {
 			var data = JSON.parse(data);

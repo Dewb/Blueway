@@ -9,7 +9,7 @@ from numpy import shape,zeros,minimum,maximum,ravel,array,ones
 import web_server
 import webbrowser
 
-webbrowser.open('http://localhost:8000/')
+#webbrowser.open('http://localhost:8000/')
 
 s=web_server.WebScreen()
 
@@ -73,12 +73,12 @@ def imdisplay(data,socks,mapping):
      p=display(data[:,i],socks[i],1)
      px[i*50:i*50+50,:]=p
      p=display(data[:,i+1],socks[i],2)
-     px[i*50+50:i*50+100,:]=p
+     px[i*50+100:i*50+150,:]=p
    s.render(px)
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
     sz = len(socks);
-    px = ones([100*sz,3])*255
+    px = zeros([100*sz,3])
     for i in range(0,sz):
       p=displayi(data[:,i],socks[i],1,CM)
       px[i*50:i*50+50,:]=p
