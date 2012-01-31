@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 
-
 # Arugments:
 #
 # Duration -- time to run in secs.

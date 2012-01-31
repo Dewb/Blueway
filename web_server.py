@@ -12,9 +12,9 @@ Copyright (c) 2012 CEMMI. All rights reserved.
 #import util.ComponentRegistry as compReg
 import colormap;
 import time as clock;
-from numpy import shape,zeros,minimum,maximum,ravel,array;
+from numpy import shape,zeros,minimum,maximum,ravel,array, random;
 import threading, socket, re, struct, hashlib, json, sys
-import optparse, colorsys, random,webbrowser, select, os
+import optparse, colorsys, webbrowser, select, os
 from itertools import izip
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -22,44 +22,6 @@ from websocket import WebSocketServer
 from multiprocessing import Queue
 from Queue import Empty
 
-def randomLoc(maxBoundingBox, minBoundingBox=(0,0)): #TODO: make less shitty
-    loc = []
-    loc.append(random.randint(minBoundingBox[0], maxBoundingBox[0]))
-    loc.append(random.randint(minBoundingBox[1], maxBoundingBox[1]))
-    return tuple(loc)
-    
-    
-def floatToIntColor(rgb):
-    rgb[0] = int(rgb[0]*256 + .5)
-    rgb[1] = int(rgb[1]*256 + .5)
-    rgb[2] = int(rgb[2]*256 + .5)
-    return safeColor(rgb)
-
-def safeColor(c):
-    """Ensures that a color is valid"""
-    c[0] = c[0] if c[0] < 255 else 255
-    c[1] = c[1] if c[1] < 255 else 255
-    c[2] = c[2] if c[2] < 255 else 255
-    return c
-
-    
-def randomBrightColor():
-    hue = random.random()
-    sat = random.random()/2.0 + .5
-    val = 1.0
-    hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
-    return array(floatToIntColor(ret))
-
-def randomDimColor(value):
-    hue = random.random()
-    sat = random.random()/2.0 + .5
-    val = value
-    hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
-    return floatToIntColor(ret)    
-    
-    
 class WebScreen:
     size = []
     locs = []
@@ -79,9 +41,11 @@ class WebScreen:
         else:
            opts['listen_port'] = int(args[0])
 
-        opts['web'] = './static/'  #changes directory to here
+        opts['web'] = './static/'  #serves files from this dir on 8000!
         
+        #magick happens here:
         self.web_sock=WebSocketRenderer(**opts)
+        # this can go away eventually?
         self.page_serve=SimpleWebserver(hostname,port)
         #webbrowser.open('http://'+hostname+':'+str(port))
         self.renderer=RenderThread(self.web_sock)
@@ -95,19 +59,11 @@ class WebScreen:
                                                     [168, 40] ,[164, 40] ,[160, 40] ,[156, 40] ,[152, 40] ,[148, 40] ,[144, 40],
                                                     [140, 40] ,[136, 40] ,[132, 40]])
 
-                #self.locs = [(0,0),(10,10),(20,20)]0
-        self.pixels = [randomBrightColor() for i in self.locs]
-                #self.pixels = [array(x) for x in [(2, 0, 60),(2, 0, 76),(2, 0, 83),(2, 0, 76),(2, 0, 60),(1, 0, 40),(0, 0, 0),
-        #                       (35, 9, 0),(60, 16, 0),(90, 24, 0),(115, 31, 0),(161, 47, 0),(161, 48, 0), (141, 43, 0),
-        #                       (107, 33, 0),(71, 23, 0),(0, 0, 0)]]
+        self.pixels = [random.random_integers(0,255,3) for i in self.locs]
 
-    def setup_screen(self,size,locs,pixels = None):
+    def setup_screen(self,size,locs):
         self.size = size
         self.locs = locs
-        if pixels == None:
-            self.pixels = [randomBrightColor() for i in self.locs]
-        else:
-            self.pixels = pixels
 
     def render(self,px=None):
         if px != None:
@@ -208,7 +164,7 @@ class WebSocketRenderer(WebSocketServer):
                     self.send_close()
                     raise self.EClose(closed)
 
-
+# may not be needed, websockify serves files from passed-in dir
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 class SimpleWebserver(ThreadingHTTPServer): 

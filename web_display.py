@@ -2,7 +2,8 @@
 
 import socket
 import sys
-import colormap;
+import colormap
+from random import random as randomF
 from numpy import shape,zeros,minimum,maximum,ravel,array
 
 import web_server
@@ -27,11 +28,41 @@ for j in range(len(sockets)):
 
 s.setup_screen([0,0,1000,200],locs)   
 
+def floatToIntColor(rgb):
+    rgb[0] = int(rgb[0]*256 + .5)
+    rgb[1] = int(rgb[1]*256 + .5)
+    rgb[2] = int(rgb[2]*256 + .5)
+    return safeColor(rgb)
+
+def safeColor(c):
+    """Ensures that a color is valid"""
+    c[0] = c[0] if c[0] < 255 else 255
+    c[1] = c[1] if c[1] < 255 else 255
+    c[2] = c[2] if c[2] < 255 else 255
+    return c
+    
+def randomBrightColor():
+    hue = randomF()
+    sat = randomF()/2.0 + .5
+    val = 1.0
+    hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
+    ret = [hue, sat, val]
+    return array(floatToIntColor(ret))
+
+def randomDimColor(value):
+    hue = randomF()
+    sat = randomF()/2.0 + .5
+    val = value
+    hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
+    ret = [hue, sat, val]
+    return floatToIntColor(ret)    
+    
+
 def display(data, sock, chan=1):
    pixels = zeros([50,3])
    for i in range(50):
       (r,g,b)=data[i*3:(i*3+3)]
-      pixels[i,:]=web_server.floatToIntColor([r,g,b])
+      pixels[i,:]=floatToIntColor([r,g,b])
    return pixels
       # def display(data, sock, chan=1):
       #    xmit = zeros(174, 'ubyte')

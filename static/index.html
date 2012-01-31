@@ -4,7 +4,8 @@
 	<script src="include/util.js"></script> 
 	<script src="include/websock.js"></script> 
     <script src="include/base64.js"></script>
-    
+    <script src="include/webutil.js"></script> 
+
 	<style>
 	#connection,#framerate {
 		color:white;
@@ -30,13 +31,13 @@
 	}
 
 	window.onload = function() {
-		canvas = document.getElementById('canvas');
+		canvas = $D('canvas');
 		ctx = canvas.getContext('2d');
 		blank();
 
 		frameCount = 0;
 		lastTime = (new Date).getTime();
-		document.getElementById('connection').innerHTML = 'Status: disconnected';
+		$D('connection').innerHTML = 'Status: disconnected';
 
 		connect();
 	};
@@ -57,7 +58,7 @@
 		ws.on('open', function(e) {
 			console.log(">> WebSockets.onopen");
 			//echo_ref = setInterval(send_msg, echoDelay);
-			document.getElementById('connection').innerHTML = 'Status: connected';
+			$D('connection').innerHTML = 'Status: connected';
 
 			console.log("<< WebSockets.onopen");
 		});
@@ -68,7 +69,7 @@
 				echo_ref = null;
 			}
 */
-			document.getElementById('connection').innerHTML = 'Status: disconnected';
+			$D('connection').innerHTML = 'Status: disconnected';
 			blank();
 			setTimeout(connect, 2000);
 			
@@ -125,7 +126,7 @@
 					var t = (new Date).getTime();
 					var dt = t - lastTime;
 					var fr = 30 / (dt / 1000.0);
-					document.getElementById('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
+					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
 
 					lastTime = t;
 				}
@@ -133,7 +134,7 @@
 				frameCount += 1;
 
 			} else if (data['status'] == 'exiting') {
-				document.getElementById('framerate').innerHTML = '';
+				$D('framerate').innerHTML = '';
 				ws.close();
 			}
 		};
