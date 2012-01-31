@@ -69,18 +69,19 @@ class WebScreen:
     def __iter__(self): # iterator over all pixels
         return izip(self.locs, self.pixels)
         
-    def __init__(self,opts,args,daemon=True):
+    def __init__(self,opts={'cert': 'self.pem', 'verbose': None, 'key': None, 'ssl_only': None},
+                      args=[]):
         hostname = 'localhost'
         port = '8080'
-
-        if len(args) == 0:
-           opts.listen_port = 8000
-        else:
-           opts.listen_port = int(args[0])
-
-        opts.web = './static/'  #changes directory to here
         
-        self.web_sock=WebSocketRenderer(**opts.__dict__)
+        if len(args) == 0:
+           opts['listen_port'] = 8000
+        else:
+           opts['listen_port'] = int(args[0])
+
+        opts['web'] = './static/'  #changes directory to here
+        
+        self.web_sock=WebSocketRenderer(**opts)
         self.page_serve=SimpleWebserver(hostname,port)
         #webbrowser.open('http://'+hostname+':'+str(port))
         self.renderer=RenderThread(self.web_sock)
@@ -90,6 +91,9 @@ class WebScreen:
         self.locs = [[196, 60] ,[192, 60] ,[188, 60] ,[184, 60] ,[180, 60] ,[176, 60] ,[172, 60],
                             [168, 60] ,[164, 60] ,[160, 60] ,[156, 60] ,[152, 60] ,[148, 60] ,[144, 60],
                             [140, 60] ,[136, 60] ,[132, 60]]
+        self.locs.extend([[196, 40] ,[192, 40] ,[188, 40] ,[184, 40] ,[180, 40] ,[176, 40] ,[172, 40],
+                                                    [168, 40] ,[164, 40] ,[160, 40] ,[156, 40] ,[152, 40] ,[148, 40] ,[144, 40],
+                                                    [140, 40] ,[136, 40] ,[132, 40]])
 
                 #self.locs = [(0,0),(10,10),(20,20)]0
         self.pixels = [randomBrightColor() for i in self.locs]
@@ -105,7 +109,9 @@ class WebScreen:
         else:
             self.pixels = pixels
 
-    def render(self):
+    def render(self,px=None):
+        if px != None:
+            self.pixels = px
         self.renderer.render(self)
         
 class RenderThread():
@@ -129,7 +135,9 @@ class RenderThread():
         for (loc, c) in lightSystem:
             if all(c < 0.05):
                 continue
-            cs = 'rgb({0},{1},{2})'.format(*c)
+            cs = '#%02x%02x%02x' % (c[0],c[1],c[2])
+            #cs = 'rgb({0},{1},{2})'.format(*c)
+            #cs = 'rgb('+str(int(c[0]))+','+str(int(c[1]))+','+str(int(c[2]))+')'
             json_frame[i] = (map(int, loc), cs)
             i += 1
 
@@ -288,7 +296,8 @@ if __name__ == '__main__':
     parser.add_option("--ssl-only", action="store_true",
             help="disallow non-encrypted connections")
     (opts, args) = parser.parse_args()
-    s=WebScreen(opts,args)
+    
+    s=WebScreen(opts.__dict__,args)
     while True:
         s.setup_dummy_screen()
         s.render()

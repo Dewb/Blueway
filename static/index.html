@@ -85,9 +85,9 @@
 
 		handleMessage = function(data) {
 			var data = JSON.parse(data);
-
+			window.data =data
 			if (data['status'] == 'ok') {
-				blank();
+//				blank();
 				var size = data['size'];
 				var frame = data['frame'];
 
