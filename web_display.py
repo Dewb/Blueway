@@ -34,7 +34,8 @@ for j in range(len(sockets)):
             y=offset[1]+(chan-1)*y_space + j*(between_chains)
             locs.append([x,y])
 
-s.setup_screen([0,0,x+offset[0]*2,y+offset[1]*2],locs)   
+s.setup_screen([0,0,500,50],locs)
+# best when canvas w(1000), h(200) are divisible by size[2], size[3]
 
 def floatToIntColor(rgb):
     a=(rgb*255+.5).round()

@@ -102,12 +102,13 @@
 				var pixelRadius = Math.min(xf, yf) / 1.0;
 
 				for (var i = 0; i < frame.length; i++) {
+				    
 					var pos = frame[i][0];
 					var clr = frame[i][1];
 
 					var x = (pos[0] - xo) * xf;
 					var y = (pos[1] - yo) * yf;
-
+					
 					ctx.fillStyle = clr;
 					ctx.strokeStyle = clr;
 
@@ -147,7 +148,7 @@
 </head>
 
 <body id='main'>
-	<canvas id='canvas' style='margin: 50px 25px;' width='800px' height='200px'></canvas>
+	<canvas id='canvas' style='margin: 50px 25px;' width='1000px' height='200px'></canvas>
 	<div id='connection'></div>
 	<div id='framerate'></div>
 </body>
