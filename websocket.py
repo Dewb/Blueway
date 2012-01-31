@@ -802,7 +802,7 @@ Sec-WebSocket-Accept: %s\r
         self.started()  # Some things need to happen after daemonizing
 
         # Allow override of SIGINT
-        signal.signal(signal.SIGINT, self.do_SIGINT)
+        #signal.signal(signal.SIGINT, self.do_SIGINT)
         if not multiprocessing:
             # os.fork() (python 2.4) child reaper
             signal.signal(signal.SIGCHLD, self.fallback_SIGCHLD)
