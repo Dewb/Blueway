@@ -19,9 +19,8 @@ from itertools import izip
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from websocket import WebSocketServer
-
-queue = []
-queueLock = threading.Lock()
+from multiprocessing import Queue
+from Queue import Empty
 
 def randomLoc(maxBoundingBox, minBoundingBox=(0,0)): #TODO: make less shitty
     loc = []
@@ -89,20 +88,39 @@ class WebSocketRenderer(WebSocketServer):
     client.  
     """
     buffer_size = 8096
-
-    def new_client(self):
+              
+    def send_all(self,data):
+        toremove = []
+        for i in range(len(self.queues)):
+            q,active =self.queues[i]
+            if active.value:
+                q.put(data)
+            else:
+                toremove.append(i)
+        for i in range(len(toremove)):
+            del self.queues[toremove[i]-i]
+        
+    def new_client(self, (gqueue,active)):
         """
         Echo back whatever is received.
         """
-
+        
         cqueue = []
         c_pend = 0
         cpartial = ""
         rlist = [self.client]
 
         while True:
+            try:
+                next = gqueue.get(False)
+                cqueue.append(next)
+            except Empty:
+                pass
+            except Exception:
+                _, exc, _ = sys.exc_info()
+                self.msg("queue read exception: %s" % str(exc))
+                
             wlist = []
-
             if cqueue or c_pend: wlist.append(self.client)
             ins, outs, excepts = select.select(rlist, wlist, [], 1)
             if excepts: raise Exception("Socket exception")
@@ -112,12 +130,14 @@ class WebSocketRenderer(WebSocketServer):
                 c_pend = self.send_frames(cqueue)
                 cqueue = []
 
+
             if self.client in ins:
                 # Receive client data, decode it, and send it back
                 frames, closed = self.recv_frames()
                 cqueue.extend(["You said: " + f for f in frames])
 
                 if closed:
+                    active.value = 0 
                     self.send_close()
                     raise self.EClose(closed)
 
@@ -127,7 +147,7 @@ class RenderThread():
         Port: Websocket listen port
     """
     def __init__(self,server):
-	self.SocketServer = server
+        self.renderer = server
         self.connection_thread = threading.Thread(target=self.handle_renders)
         self.connection_thread.daemon = True
         self.connection_thread.start()
@@ -151,25 +171,8 @@ class RenderThread():
         size = SCREEN.size
         
         json_data = json.dumps(dict(status='ok', size=map(int, size), frame=json_frame))
-#        self.client_push(json_data)
-# ************* here we do server-side push!
-        
-    def client_push(self, data):
-        dead_clients = []
-        for i in range(len(self.clients)):
-            try:
-                self.server.send_frames(data)
-                #clients[i].send("\x00")
-                #self.clients[i].send(data)
-                #self.clients[i].send("\xff")
-            except socket.error:
-                dead_clients.append(i)
-        
-        for i in range(len(dead_clients)):
-            self.close_sock(self.clients[dead_clients[i]-i])
-            del self.clients[dead_clients[i]-i]
-        self.clients_lock.release()
-    
+        #self.client_push(json_data)
+        self.renderer.send_all(json_data)
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     pass
@@ -273,5 +276,5 @@ if __name__ == '__main__':
     w=WebSocketRenderer(**opts.__dict__)
     r=RenderThread(w)
     s=SimpleWebserver(hostname,port)
-    #webbrowser.open('http://'+hostname+':'+str(port))
+    webbrowser.open('http://'+hostname+':'+str(port))
     w.start_server()

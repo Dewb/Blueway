@@ -153,6 +153,9 @@ Sec-WebSocket-Accept: %s\r
         if self.record:
             print("  - Recording to '%s.*'" % self.record)
 
+        if multiprocessing:
+            self.queues = []
+
     #
     # WebSocketServer static methods
     #
@@ -735,7 +738,7 @@ Sec-WebSocket-Accept: %s\r
         self.msg("Got SIGINT, exiting")
         sys.exit(0)
 
-    def top_new_client(self, startsock, address):
+    def top_new_client(self, startsock, address, queue = None):
         """ Do something with a WebSockets client connection. """
         # Initialize per client settings
         self.send_parts = []
@@ -758,7 +761,10 @@ Sec-WebSocket-Accept: %s\r
                     self.rec.write("var VNC_frame_data = [\n")
 
                 self.ws_connection = True
-                self.new_client()
+                if multiprocessing:
+                    self.new_client(queue)
+                else:
+                    self.new_client()
             except self.EClose:
                 _, exc, _ = sys.exc_info()
                 # Connection was not a WebSockets connection
@@ -844,10 +850,13 @@ Sec-WebSocket-Accept: %s\r
                                     % address[0])
                             break
                     elif multiprocessing:
-                        self.vmsg('%s: new handler Process' % address[0])
+                        self.vmsg('%s: new handler Process' % address[0])                        
+                        q = multiprocessing.Queue()
+                        active = multiprocessing.Value('i',1)
+                        self.queues.append((q,active))
                         p = multiprocessing.Process(
                                 target=self.top_new_client,
-                                args=(startsock, address))
+                                args=(startsock, address, (q,active)))
                         p.start()
                         # child will not return
                     else:
