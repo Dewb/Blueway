@@ -13,7 +13,7 @@ CODE_WORDS = {
     "cruft" : Cruft, #
     "seq" : Sequence,
     "help": General.help,
-    "exit": General.exit
+    "exit": General.exit,
     "debug": General.debug
 }
 
