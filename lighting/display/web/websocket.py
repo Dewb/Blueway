@@ -72,7 +72,7 @@ class WebSocketServer(object):
     WebSockets server class.
     Must be sub-classed with new_client method definition.
     """
-
+    end = False
     buffer_size = 65536
 
     server_handshake_hixie = """HTTP/1.1 101 Web Socket Protocol Handshake\r
@@ -810,7 +810,7 @@ Sec-WebSocket-Accept: %s\r
             # os.fork() (python 2.4) child reaper
             signal.signal(signal.SIGCHLD, self.fallback_SIGCHLD)
 
-        while True:
+        while not self.end:
             try:
                 try:
                     self.client = None
@@ -891,7 +891,9 @@ Sec-WebSocket-Accept: %s\r
             finally:
                 if startsock:
                     startsock.close()
-
+        print "dead"
+	for q,a in self.queues:
+             a.value = -1
 
 # HTTP handler with WebSocket upgrade support
 class WSRequestHandler(SimpleHTTPRequestHandler):

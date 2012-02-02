@@ -129,6 +129,7 @@ class WebSocketRenderer(WebSocketServer):
             elif qmode == 2:
                 pass
             else:
+		sys.exit(0)
                 print "shouldn't happen"
                
         for i in range(len(toremove)):
@@ -144,7 +145,7 @@ class WebSocketRenderer(WebSocketServer):
         cpartial = ""
         rlist = [self.client]
 
-        while True:
+        while active.value != -1:
             try:
                 next = gqueue.get(False)
                 cqueue.append(next)
