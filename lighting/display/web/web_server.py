@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-test_websock.py
+web_server.py
 
 Created by Daniel Taub on 2012-01-29.
 Copyright (c) 2012 CEMMI. All rights reserved.
@@ -40,7 +40,8 @@ class WebScreen:
         else:
            opts['listen_port'] = int(args[0])
 
-        opts['web'] = './static/'  #serves files from this dir on 8000!
+        opts['web'] = os.path.dirname(__file__)+'/static/'
+#        opts['web'] = './static/'  #serves files from this dir on 8000!
         
         #magick happens here:
         self.web_sock=WebSocketRenderer(**opts)
