@@ -114,7 +114,7 @@ class WebSocketRenderer(WebSocketServer):
               
     def send_all(self,data):
         toremove = []
-	print len(self.queues)
+	#print len(self.queues)
         for i in range(len(self.queues)):
             q,active =self.queues[i]
             qmode = active.value
@@ -267,6 +267,6 @@ if __name__ == '__main__':
     while True:
         s.setup_dummy_screen()
         s.render()
-        clock.sleep(1)
+        clock.sleep(.033)
     
     
