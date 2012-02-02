@@ -26,9 +26,8 @@ from numpy import *
 from time import sleep as wakeup
 from lighting.display.teh_display import *
 from lighting.core import LightingPattern
+from lighting.config import N,M
 
-N = 50
-M = 24
 CM = 1- colormap.MATLAB_COLORMAP
 
 class Quadratic(LightingPattern):

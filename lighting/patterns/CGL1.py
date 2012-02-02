@@ -24,11 +24,7 @@ import colorsys
 from numpy import *
 from lighting.display.teh_display import *
 from lighting.core import LightingPattern
-
-N = 50
-M = 24
-
-dt = 0.002
+from lighting.config import N,M
 
 class CGL1(LightingPattern):
     alpha = -1
@@ -41,6 +37,7 @@ class CGL1(LightingPattern):
     field = 0.1*random.randn(N)
 
     def __init__(self, args):
+	self.dt = .002
         super(CGL1, self).__init__(args)
         if args > 1: self.alpha = float(args[1])
         if args > 2: self.beta = float(args[2])

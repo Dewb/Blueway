@@ -2,11 +2,10 @@ import scipy
 from numpy import *
 from lighting.display.teh_display import teh_display
 from lighting.core import LightingPattern
+from lighting.config import N,M
 
 __author__ = 'Pevner'
 
-N = 50
-M = 24
 K = 3*N
 class BlueCord(LightingPattern):
     data = zeros([K,M])

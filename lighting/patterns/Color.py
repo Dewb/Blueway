@@ -4,9 +4,7 @@ from time import sleep
 from numpy import *
 from lighting.display.teh_display import *
 from lighting.core import LightingPattern
-
-N = 50
-M = 24
+from lighting.config import N,M
 
 class Color(LightingPattern):
     data = zeros([3 * N, M])

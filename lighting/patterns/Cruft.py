@@ -5,13 +5,12 @@ from numpy import *
 import time
 from lighting.display.teh_display import *
 from lighting.core import LightingPattern
+from lighting.config import N,M
 
 THIS_DIR = os.path.dirname(__file__)
 CRUFT = genfromtxt(os.path.join(THIS_DIR,'cruft.txt'),delimiter=',')
 
 K = shape(CRUFT)[0]
-N = 50
-M = 24
 
 class Cruft(LightingPattern):
     data = CRUFT

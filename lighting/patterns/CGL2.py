@@ -28,11 +28,7 @@ import colorsys
 from time import sleep as wakeup
 from lighting.display.teh_display import *
 from lighting.core import LightingPattern
-
-N = 50
-M = 24
-
-dt = 0.005
+from lighting.config import N,M,dt
 
 class CGL2(LightingPattern):
     alpha = -1

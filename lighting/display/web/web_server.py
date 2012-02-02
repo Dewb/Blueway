@@ -20,6 +20,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from websocket import WebSocketServer
 from multiprocessing import Queue
 from Queue import Empty
+from lighting.config import CONFIG
 
 class WebScreen:
     size = []
@@ -36,7 +37,7 @@ class WebScreen:
         port = '8080'
         
         if len(args) == 0:
-           opts['listen_port'] = 8000
+           opts['listen_port'] = CONFIG.listen_port
         else:
            opts['listen_port'] = int(args[0])
 

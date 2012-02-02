@@ -25,5 +25,6 @@ class KeyboardControlThread(ControlThread):
         super.lighting_thread.swap_current_pattern(pattern)
 
     def get_input(self):
-        return sys.stdin.readline().split()
+        choice =  sys.stdin.readline().split()
+        return choice
 
