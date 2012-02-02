@@ -26,8 +26,6 @@ class ControlThread(Thread):
     def run(self):
         while not self.end:
             input = self.get_input()
-            if input == []:
-		self.deny_command(command)
             command = input[0]
             if self.acceptable_command(command):
                 self.perform_command(command, input[-0])

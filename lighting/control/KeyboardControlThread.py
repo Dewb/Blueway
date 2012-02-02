@@ -36,6 +36,8 @@ class KeyboardControlThread(ControlThread):
 		print "you so crazy!"
 
     def get_input(self):
-        choice =  sys.stdin.readline().split()
+	choice =  sys.stdin.readline().split()
+	while choice != []:
+		choice =  sys.stdin.readline().split()
         return choice
 
