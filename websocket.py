@@ -738,7 +738,7 @@ Sec-WebSocket-Accept: %s\r
         self.msg("Got SIGINT, exiting")
         sys.exit(0)
 
-    def top_new_client(self, startsock, address, queue = None):
+    def top_new_client(self, startsock, address, queuetuple = None):
         """ Do something with a WebSockets client connection. """
         # Initialize per client settings
         self.send_parts = []
@@ -762,12 +762,14 @@ Sec-WebSocket-Accept: %s\r
 
                 self.ws_connection = True
                 if multiprocessing:
-                    self.new_client(queue)
+                    queuetuple[1].value = 1
+                    self.new_client(queuetuple)
                 else:
                     self.new_client()
             except self.EClose:
                 _, exc, _ = sys.exc_info()
                 # Connection was not a WebSockets connection
+                queuetuple[1].value = 0
                 if exc.args[0]:
                     self.msg("%s: %s" % (address[0], exc.args[0]))
             except Exception:
@@ -853,7 +855,7 @@ Sec-WebSocket-Accept: %s\r
                     elif multiprocessing:
                         self.vmsg('%s: new handler Process' % address[0])                        
                         q = multiprocessing.Queue()
-                        active = multiprocessing.Value('i',1)
+                        active = multiprocessing.Value('i',2)
                         self.queues.append((q,active))
                         p = multiprocessing.Process(
                                 target=self.top_new_client,

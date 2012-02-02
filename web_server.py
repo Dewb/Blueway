@@ -114,15 +114,22 @@ class WebSocketRenderer(WebSocketServer):
               
     def send_all(self,data):
         toremove = []
+	print len(self.queues)
         for i in range(len(self.queues)):
             q,active =self.queues[i]
-            if active.value:
+            qmode = active.value
+            if qmode == 1:
                 try:
                     q.put(data)
                 except IOError:
                     toremove.append(i)
-            else:
+            elif qmode == 0:
                 toremove.append(i)
+            elif qmode == 2:
+                pass
+            else:
+                print "shouldn't happen"
+               
         for i in range(len(toremove)):
             del self.queues[toremove[i]-i]
         
