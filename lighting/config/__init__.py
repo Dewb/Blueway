@@ -1,0 +1,2 @@
+class CONFIG:
+	web = True
