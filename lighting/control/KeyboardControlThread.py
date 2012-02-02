@@ -37,7 +37,7 @@ class KeyboardControlThread(ControlThread):
 
     def get_input(self):
 	choice =  sys.stdin.readline().split()
-	while choice != []:
+	while choice == []:
 		choice =  sys.stdin.readline().split()
         return choice
 
