@@ -1,7 +1,5 @@
 import time
-
-N = 50
-M = 24
+from lighting.config import M,N
 
 class LightingPattern(object):
     duration = 10

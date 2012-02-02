@@ -72,5 +72,5 @@ class CGL2(LightingPattern):
           self.CM = colormap.solid_colormap(rgb[0],rgb[1],rgb[2])
        teh_displayi(real(self.data+1)/2,self.CM)
        for i in range(0,self.speed):
-         self.data = self.dynamics(self.data, self.scale)
+         self.data = self.dynamics(self.data)
        wakeup(0.005)
