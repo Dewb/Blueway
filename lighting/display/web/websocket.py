@@ -735,7 +735,7 @@ Sec-WebSocket-Accept: %s\r
             pass
 
     def do_SIGINT(self, sig, stack):
-        self.msg("Got SIGINT, exiting")
+#        self.msg("Got SIGINT, exiting")
         sys.exit(0)
 
     def top_new_client(self, startsock, address, queuetuple = None):

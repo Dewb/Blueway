@@ -11,12 +11,12 @@ import webbrowser
 
 #webbrowser.open('http://localhost:8000/')
 
-s=web_server.WebScreen()
-
+screen=web_server.WebScreen()
 x_space = 10
 y_space = 10
 offset=[10,10]
 between_chains = 13
+
 def make_sockets(Ds):
     return range(len(Ds))
 
@@ -34,7 +34,7 @@ for j in range(len(sockets)):
             y=offset[1]+(chan-1)*y_space + j*(between_chains)
             locs.append([x,y])
 
-s.setup_screen([0,0,500,50],locs)
+screen.setup_screen([0,0,500,50],locs)
 # best when canvas w(1000), h(200) are divisible by size[2], size[3]
 
 def floatToIntColor(rgb):
@@ -74,7 +74,7 @@ def imdisplay(data,socks,mapping):
      px[i*50:i*50+50,:]=p
      p=display(data[:,i+1],socks[i],2)
      px[i*50+100:i*50+150,:]=p
-   s.render(px)
+   screen.render(px)
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
     sz = len(socks);
@@ -85,7 +85,7 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
       p=displayi(data[:,i+1],socks[i],2,CM)
       px[i*50+100:i*50+150,:]=p
 #      s.setup_screen([0,0,x_space*50*sz,y_space*2],lc)   
-    s.render(px)
+    screen.render(px)
 
      
 def teh_displayi(data,CM=colormap.MATLAB_COLORMAP):

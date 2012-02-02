@@ -1,4 +1,4 @@
-__author__ = 'Pevner'
+__author__ = 'Smark'
 __all__ = ['BlueCord', 'CGL1', 'CGL2', 'Color', 'Cruft', 'Quadratic', 'TwinklePlusPlus', 'Sequence']
 
 from BlueCord import BlueCord
