@@ -14,6 +14,7 @@ CODE_WORDS = {
     "seq" : Sequence,
     "help": General.help,
     "exit": General.exit
+    "debug": General.debug
 }
 
 class KeyboardControlThread(ControlThread):
@@ -30,8 +31,8 @@ class KeyboardControlThread(ControlThread):
 	elif function.__module__.startswith('lighting.control'):
 		try:
 			function(args,self)
-		except Exception as e:
-			print e
+		except TypeError as e:
+			print e.message
 	else:
 		print "you so crazy!"
 
