@@ -891,7 +891,7 @@ Sec-WebSocket-Accept: %s\r
             finally:
                 if startsock:
                     startsock.close()
-        print "dead"
+        print "killing all processes..."
 	for q,a in self.queues:
              a.value = -1
 
