@@ -41,7 +41,7 @@ class CGL1(LightingPattern):
         super(CGL1, self).__init__(args)
         if args > 1: self.alpha = float(args[1])
         if args > 2: self.beta = float(args[2])
-        if args > 3: self.speed = float(args[3])
+        if args > 3: self.speed = int(args[3])
         if args > 4: self.scale = float(args[4])
         if args == 6:
             omega = float(args[5])
