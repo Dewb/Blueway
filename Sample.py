@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 __author__ = 'Pevner'
 
 from lighting.control import LightingThread,KeyboardControlThread

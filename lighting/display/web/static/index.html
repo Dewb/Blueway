@@ -74,60 +74,74 @@
 		ws.on('error', function(e) {
 			console.log(">> WebSockets.onerror");
 		});
+		var frame =[];
+		var size = [0,0,0,0];
 		handleMessage = function(data) {
 			var data = JSON.parse(data);
 			//window.data =data
 			if (data['status'] == 'ok') {
-				blank();
-				var size = data['size'];
-				var frame = data['frame'];
-
-				var xo = size[0];
-				var xf = canvas.width / (size[2]-size[0]);
-				var yo = size[1];
-				var yf = canvas.height / (size[3]-size[1]);
-
-				var pixelWidth = xf;
-				var pixelHeight = yf;
-				var pixelRadius = Math.min(xf, yf) / 1.0;
-
-				for (var i = 0; i < frame.length; i++) {
-				    
-					var pos = frame[i][0];
-					var clr = frame[i][1];
-
-					var x = (pos[0] - xo) * xf;
-					var y = (pos[1] - yo) * yf;
-					
-					ctx.fillStyle = clr;
-					ctx.strokeStyle = clr;
-
-					if (circular_pixels) {
-						ctx.beginPath();
-						ctx.arc(x, y, pixelRadius, 0, Math.PI*2, true);
-						ctx.closePath();
-						ctx.fill();
-					} else {
-						ctx.fillRect(x, y, pixelWidth, pixelHeight);
-					}
-				}
-
-				if (frameCount == 30) {
-					frameCount = 0;
-					var t = (new Date).getTime();
-					var dt = t - lastTime;
-					var fr = 30 / (dt / 1000.0);
-					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
-
-					lastTime = t;
-				}
-				frameCount += 1;
-
+				frame = data['frame']
+				size = data['size']
 			} else if (data['status'] == 'exiting') {
 				$D('framerate').innerHTML = '';
 				ws.close();
 			}
 		}
+		
+		draw = function(){
+			
+			
+			blank();
+			
+			var xo = size[0];
+			var xf = canvas.width / (size[2]-size[0]);
+			var yo = size[1];
+			var yf = canvas.height / (size[3]-size[1]);
+
+			var pixelWidth = xf;
+			var pixelHeight = yf;
+			var pixelRadius = Math.min(xf, yf) / 1.0;
+
+			for (var i = 0; i < frame.length; i++) {
+			    
+				var pos = frame[i][0];
+				var clr = frame[i][1];
+
+				var x = (pos[0] - xo) * xf;
+				var y = (pos[1] - yo) * yf;
+				
+				ctx.fillStyle = clr;
+				ctx.strokeStyle = clr;
+
+				if (circular_pixels) {
+					ctx.beginPath();
+					ctx.arc(x, y, pixelRadius, 0, Math.PI*2, true);
+					ctx.closePath();
+					ctx.fill();
+				} else {
+					ctx.fillRect(x, y, pixelWidth, pixelHeight);
+				}
+			}
+
+			if (frameCount == 30) {
+				frameCount = 0;
+				var t = (new Date).getTime();
+				var dt = t - lastTime;
+				var fr = 30 / (dt / 1000.0);
+				$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
+
+				lastTime = t;
+			}
+			frameCount += 1;
+			
+		}
+
+		var FPSgoal = 30;
+		setInterval(function() {
+		  //update();
+		  draw();
+		}, 1000/FPSgoal);
+	
 	}
 
 	function blank() {
