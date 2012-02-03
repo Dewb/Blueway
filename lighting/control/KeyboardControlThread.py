@@ -14,10 +14,12 @@ CODE_WORDS = {
     "seq" : Sequence,
     "help": General.help,
     "exit": General.exit,
-    "debug": General.debug
+    "debug": General.debug,
+    "list": General.list
 }
 
 class KeyboardControlThread(ControlThread):
+    patterns = [x[0] for x in CODE_WORDS.iteritems() if x[1].__module__.startswith('lighting.patterns')]
     def acceptable_command(self, command):
         return CODE_WORDS.has_key(command.strip('/'))
 

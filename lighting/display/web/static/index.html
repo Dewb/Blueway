@@ -26,7 +26,7 @@
 
 	var frameCount;
 	var lastTime;
-
+	var interval;
     function message(str) {
         console.log(str);
 	}
@@ -59,6 +59,12 @@
 			console.log(">> WebSockets.onopen");
 			//echo_ref = setInterval(send_msg, echoDelay);
 			$D('connection').innerHTML = 'Status: connected';
+			var FPSgoal = 30;
+			interval = setInterval(function() {
+			  update();
+			  draw();
+			}, 1000/FPSgoal);
+			
 		});
 		ws.on('close', function(e) {
 			console.log(">> WebSockets.onclose");
@@ -68,6 +74,7 @@
 			}
 */
 			$D('connection').innerHTML = 'Status: disconnected';
+			clearInterval(interval);
 			blank();
 			setTimeout(connect, 3000);
 		});
@@ -122,25 +129,21 @@
 					ctx.fillRect(x, y, pixelWidth, pixelHeight);
 				}
 			}
-
-			if (frameCount == 30) {
-				frameCount = 0;
-				var t = (new Date).getTime();
-				var dt = t - lastTime;
-				var fr = 30 / (dt / 1000.0);
-				$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
-
-				lastTime = t;
-			}
-			frameCount += 1;
 			
 		}
 
-		var FPSgoal = 30;
-		setInterval(function() {
-		  //update();
-		  draw();
-		}, 1000/FPSgoal);
+		update=function(){
+				if (frameCount == 30) {
+					frameCount = 0;
+					var t = (new Date).getTime();
+					var dt = t - lastTime;
+					var fr = 30 / (dt / 1000.0);
+					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
+
+					lastTime = t;
+				}
+				frameCount += 1;
+		}
 	
 	}
 

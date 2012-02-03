@@ -13,3 +13,5 @@ def exit(args,control_thread):
 def debug(args,control_thread):
   print "entering debugger"
   import pdb; pdb.set_trace()
+def list(args,control_thread):
+  print control_thread.patterns
