@@ -4,7 +4,7 @@ from threading import Thread
 __author__ = 'Pevner'
 
 class LightingThread(Thread):
-    queued_patterns = deque()
+    queued_patterns = deque([])
     current_pattern = None
     end = False
 
@@ -14,7 +14,8 @@ class LightingThread(Thread):
         self.queued_patterns.extend(patterns)
 
     def stop_current_pattern(self):
-        if self.current_pattern is not None: self.current_pattern.stop()
+        if self.current_pattern is not None:
+            self.current_pattern.stop()
 
     def stop(self):
         self.end = True
@@ -23,14 +24,13 @@ class LightingThread(Thread):
         self.queued_patterns.append(pattern)
 
     def swap_current_pattern(self, pattern):
-        self.queued_patterns.appendLeft(pattern)
+        self.queued_patterns.appendleft(pattern)
         self.stop_current_pattern()
 
     def run(self):
         while not self.end:
-            if self.current_pattern is None:
-                if not self.queued_patterns: continue
-                self.current_pattern = self.queued_patterns.popleft()
+            if not self.queued_patterns: continue
+            self.current_pattern = self.queued_patterns.popleft()
             self.current_pattern.illuminate()
 
 

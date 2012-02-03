@@ -26,19 +26,19 @@ class KeyboardControlThread(ControlThread):
 
     def perform_command(self, command, args):
         function = CODE_WORDS.get(command)
-	if function.__module__.startswith('lighting.patterns'):
-	       	super.lighting_thread.swap_current_pattern(function(args))
-	elif function.__module__.startswith('lighting.control'):
-		try:
-			function(args,self)
-		except TypeError as e:
-			print e.message
-	else:
-		print "you so crazy!"
+        if function.__module__.startswith('lighting.patterns'):
+            self.lighting_thread.swap_current_pattern(function(args))
+        elif function.__module__.startswith('lighting.control'):
+            try:
+                function(args,self)
+            except TypeError as e:
+                print e.message
+        else:
+            print "you so crazy!"
 
     def get_input(self):
-	choice =  sys.stdin.readline().split()
-	while choice == []:
-		choice =  sys.stdin.readline().split()
+        choice =  sys.stdin.readline().split()
+        while not choice:
+            choice =  sys.stdin.readline().split()
         return choice
 

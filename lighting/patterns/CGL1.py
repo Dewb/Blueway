@@ -29,6 +29,7 @@ from lighting.config import N,M
 class CGL1(LightingPattern):
     alpha = -1
     beta = -1.5
+    dt = .002
     speed = 1
     scale = 1
     omega = 0
@@ -37,7 +38,6 @@ class CGL1(LightingPattern):
     field = 0.1*random.randn(N)
 
     def __init__(self, args):
-	self.dt = .002
         super(CGL1, self).__init__(args)
         if args > 1: self.alpha = float(args[1])
         if args > 2: self.beta = float(args[2])

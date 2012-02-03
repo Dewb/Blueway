@@ -28,6 +28,6 @@ class ControlThread(Thread):
             input = self.get_input()
             command = input[0]
             if self.acceptable_command(command):
-                self.perform_command(command, input[-0])
+                self.perform_command(command, input[1:])
             else:
                 self.deny_command(command)
