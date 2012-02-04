@@ -75,7 +75,6 @@ def imdisplay(data,socks,mapping):
      p=display(data[:,i+1],socks[i],2)
      px[i*50+100:i*50+150,:]=p
    screen.update(px)
-   screen.render()
    
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
@@ -88,7 +87,6 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
       px[i*50+100:i*50+150,:]=p
 #      s.setup_screen([0,0,x_space*50*sz,y_space*2],lc)   
     screen.update(px)
-    screen.render()
 
      
 def teh_displayi(data,CM=colormap.MATLAB_COLORMAP):

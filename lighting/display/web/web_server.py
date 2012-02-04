@@ -27,6 +27,7 @@ class WebScreen:
     locs = []
     pixels = []
     updated = False
+    dummy = False
     def __len__(self):
         return len(self.locs)
     def __iter__(self): # iterator over all pixels
@@ -59,8 +60,10 @@ class WebScreen:
         self.locs.extend([[196, 40] ,[192, 40] ,[188, 40] ,[184, 40] ,[180, 40] ,[176, 40] ,[172, 40],
                                                     [168, 40] ,[164, 40] ,[160, 40] ,[156, 40] ,[152, 40] ,[148, 40] ,[144, 40],
                                                     [140, 40] ,[136, 40] ,[132, 40]])
+        self.dummy = True
     def update_dummy_screen(self):
         self.update([random.random_integers(0,255,3) for i in self.locs])
+        self.updated = True
 
     def update(self,px):
         self.pixels = px
@@ -71,6 +74,8 @@ class WebScreen:
         self.locs = locs
 
     def render(self,px=None):
+        if self.dummy:
+            self.update_dummy_screen()
         if not self.updated:
             return
    
@@ -110,6 +115,9 @@ class WebSocketRenderer(WebSocketServer):
     def __init__(self,screen,args):
         self.screen = screen
         WebSocketServer.__init__(self,**args)
+    def main_loop_callback(self):
+        self.screen.render()
+        
     def send_all(self,data):
         toremove = []
 	#print len(self.queues)

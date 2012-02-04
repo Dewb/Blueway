@@ -788,6 +788,9 @@ Sec-WebSocket-Accept: %s\r
     def new_client(self):
         """ Do something with a WebSockets client connection. """
         raise("WebSocketServer.new_client() must be overloaded")
+    
+    def main_loop_callback(self):
+        pass
 
     def start_server(self):
         """
@@ -811,6 +814,7 @@ Sec-WebSocket-Accept: %s\r
             signal.signal(signal.SIGCHLD, self.fallback_SIGCHLD)
 
         while not self.end:
+            self.main_loop_callback()
             try:
                 try:
                     self.client = None
