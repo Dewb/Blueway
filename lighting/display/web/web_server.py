@@ -149,13 +149,19 @@ class WebSocketRenderer(WebSocketServer):
         c_pend = 0
         cpartial = ""
         rlist = [self.client]
+        self.last = None
 
         while active.value != -1:
+            #self.screen.update_dummy_screen()
+            #self.screen.render()
             try:
                 next = gqueue.get(False)
+                self.last = next
                 cqueue.append(next)
             except Empty:
                 pass
+                if self.last:
+                    cqueue.append(self.last)
             except Exception:
                 _, exc, _ = sys.exc_info()
                 self.msg("queue read exception: %s" % str(exc))
