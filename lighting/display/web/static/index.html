@@ -94,36 +94,43 @@
 			console.log(">> WebSockets.onerror");
 		});
 		var frame =[];
+		var locations =[];
+
 		var size = [0,0,0,0];
 		handleMessage = function(data) {
 			var data = JSON.parse(data);
 			//window.data =data
 			if (data['status'] == 'ok') {
-				frame = data['frame']
-				size = data['size']
+				frame = data['frame'];
+				size = data['size'];
+			} else if (data['status'] == 'setup') {
+				locations = data['frame'];
+				size = data['size'];
+				setup();
 			} else if (data['status'] == 'exiting') {
 				$D('framerate').innerHTML = '';
 				ws.close();
 			}
 		}
-		
+		setup = function(){
+			console.log('setup received')
+		}
 		draw = function(){
 			
-			
-			blank();
-			
-			var xo = size[0];
-			var xf = canvas.width / (size[2]-size[0]);
-			var yo = size[1];
-			var yf = canvas.height / (size[3]-size[1]);
+				blank();
+				var xo = size[0];
+				var xf = canvas.width / (size[2]-size[0]);
+				var yo = size[1];
+				var yf = canvas.height / (size[3]-size[1]);
 
-			var pixelWidth = xf;
-			var pixelHeight = yf;
-			var pixelRadius = Math.min(xf, yf) / 1.0;
+				var pixelWidth = xf;
+				var pixelHeight = yf;
+				var pixelRadius = Math.min(xf, yf) / 1.0;
+			
 
 			for (var i = 0; i < frame.length; i++) {
 			    
-				var pos = frame[i][0];
+				var pos = locations[i];
 				var clr = frame[i][1];
 
 				var x = (pos[0] - xo) * xf;

@@ -26,6 +26,7 @@ class WebScreen:
     size = []
     locs = []
     pixels = []
+    updated = False
     def __len__(self):
         return len(self.locs)
     def __iter__(self): # iterator over all pixels
@@ -45,11 +46,10 @@ class WebScreen:
 #        opts['web'] = './static/'  #serves files from this dir on 8000!
         
         #magick happens here:
-        self.web_sock=WebSocketRenderer(**opts)
+        self.web_sock=WebSocketRenderer(self,opts)
         # this can go away eventually?
         #self.page_serve=SimpleWebserver(hostname,port)
         #webbrowser.open('http://'+hostname+':'+str(port))
-        self.renderer=RenderThread(self.web_sock)
 
     def setup_dummy_screen(self):
         self.size = [0,0,796,210]
@@ -59,51 +59,46 @@ class WebScreen:
         self.locs.extend([[196, 40] ,[192, 40] ,[188, 40] ,[184, 40] ,[180, 40] ,[176, 40] ,[172, 40],
                                                     [168, 40] ,[164, 40] ,[160, 40] ,[156, 40] ,[152, 40] ,[148, 40] ,[144, 40],
                                                     [140, 40] ,[136, 40] ,[132, 40]])
+    def update_dummy_screen(self):
+        self.update([random.random_integers(0,255,3) for i in self.locs])
 
-        self.pixels = [random.random_integers(0,255,3) for i in self.locs]
+    def update(self,px):
+        self.pixels = px
+        self.updated = True
 
     def setup_screen(self,size,locs):
-        self.size = size
+        self.size = map(int,size)
         self.locs = locs
 
     def render(self,px=None):
-        if px != None:
-            self.pixels = px
-        self.renderer.render(self)
-        
-class RenderThread():
-    """
-        Renders frame data over a websocket.
-        Port: Websocket listen port
-    """
-    def __init__(self,server):
-        self.renderer = server
-        self.connection_thread = threading.Thread(target=self.handle_renders)
-        self.connection_thread.daemon = True
-        self.connection_thread.start()
-        
-
-    def handle_renders(self):
-        self.renderer.start_server()
-
-    def render(self, lightSystem, currentTime=clock.time()*1000):
-        json_frame = [0]*len(lightSystem)
+        if not self.updated:
+            return
+   
+        currentTime=clock.time()*1000
+        json_frame = [0]*len(self)
         i = 0
-        for (loc, c) in lightSystem:
+
+        for (loc, c) in self:
             if all(c < 0.05):
-                continue
+                cs = '000000'
             cs = '#%02x%02x%02x' % (c[0],c[1],c[2])
             #cs = 'rgb({0},{1},{2})'.format(*c)
             #cs = 'rgb('+str(int(c[0]))+','+str(int(c[1]))+','+str(int(c[2]))+')'
-            json_frame[i] = (map(int, loc), cs)
+            json_frame[i] = (loc, cs)
             i += 1
+        status = 'ok'
+        self.send_json(status,self.size,json_frame)
+        
+    def setup(self):
+        json_frame = self.locs
+        status = 'setup'
+        self.send_json(status,self.size,json_frame)
+        
+    def send_json(self,status,size,json_frame):
 
-        json_frame = json_frame[0:i]
-        size = lightSystem.size
-
-        json_data = json.dumps(dict(status='ok', size=map(int, size), frame=json_frame))
+        json_data = json.dumps(dict(status=status, size=size, frame=json_frame))
         #self.client_push(json_data)
-        self.renderer.send_all(json_data)
+        self.web_sock.send_all(json_data)
 
 
 class WebSocketRenderer(WebSocketServer):
@@ -112,7 +107,9 @@ class WebSocketRenderer(WebSocketServer):
     client.  
     """
     buffer_size = 8096
-              
+    def __init__(self,screen,args):
+        self.screen = screen
+        WebSocketServer.__init__(self,**args)
     def send_all(self,data):
         toremove = []
 	#print len(self.queues)
@@ -129,7 +126,7 @@ class WebSocketRenderer(WebSocketServer):
             elif qmode == 2:
                 pass
             else:
-		sys.exit(0)
+                sys.exit(0)
                 print "shouldn't happen"
                
         for i in range(len(toremove)):
@@ -139,7 +136,7 @@ class WebSocketRenderer(WebSocketServer):
         """
         Echo back whatever is received.
         """
-        
+        self.screen.setup()
         cqueue = []
         c_pend = 0
         cpartial = ""
@@ -190,9 +187,6 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
     
     s=WebScreen(opts.__dict__,args)
-    while True:
-        s.setup_dummy_screen()
-        s.render()
-        clock.sleep(.033)
-    
+    s.setup_dummy_screen()
+    s.web_sock.start_server()
     

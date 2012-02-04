@@ -17,6 +17,8 @@ lighting_thread.start()
 #and let's engage that controller
 control_thread.start()
 #and now you're having fun!
+from lighting.display.web.web_display import screen
+screen.web_sock.start_server()
 
 #try running some of the sample patterns by typing them in like it were a command-line, with their name and arguments
 
