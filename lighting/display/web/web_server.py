@@ -81,16 +81,17 @@ class WebScreen:
    
         currentTime=clock.time()*1000
         json_frame = [0]*len(self)
-        i = 0
-
-        for (loc, c) in self:
-            if all(c < 0.05):
-                cs = '000000'
-            cs = '#%02x%02x%02x' % (c[0],c[1],c[2])
+#        i = 0
+#        import pdb;pdb.set_trace()
+        json_frame = [all(c < 0.05) and '000000' or '#%02x%02x%02x'%(c[0],c[1],c[2]) for c in self.pixels]
+#        for (loc, c) in self:
+#            if all(c < 0.05):
+#                cs = '000000'
+#            cs = '#%02x%02x%02x' % (c[0],c[1],c[2])
             #cs = 'rgb({0},{1},{2})'.format(*c)
             #cs = 'rgb('+str(int(c[0]))+','+str(int(c[1]))+','+str(int(c[2]))+')'
-            json_frame[i] = (loc, cs)
-            i += 1
+#            json_frame[i] = (loc, cs)
+#            i += 1
         status = 'ok'
         self.send_json(status,self.size,json_frame)
         
