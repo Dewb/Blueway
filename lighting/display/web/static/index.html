@@ -36,6 +36,8 @@
 	var ws;
 
 	var frameCount;
+	var dataCount;
+
 	var lastTime;
 	var interval;
 	var drawing = false;
@@ -49,6 +51,7 @@
 		blank();
 
 		frameCount = 0;
+		dataCount = 0;
 		lastTime = (new Date).getTime();
 		$D('connection').innerHTML = 'Status: disconnected';
 
@@ -101,6 +104,7 @@
 			var data = JSON.parse(data);
 			//window.data =data
 			if (data['status'] == 'ok') {
+				dataCount+=1;
 				frame = data['frame'];
 				size = data['size'];
 			} else if (data['status'] == 'setup') {
@@ -158,10 +162,16 @@
 				if (frameCount >= 30) {
 					var fc = frameCount;
 					frameCount = 0;
+					var dc = dataCount;
+					dataCount = 0;
+					
 					var t = (new Date).getTime();
 					var dt = t - lastTime;
 					var fr = fc / (dt / 1000.0);
-					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
+					var dr = dc / (dt / 1000.0);
+
+					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps' +
+					'<br> Datarate: '+dr.toFixed(2);
 
 					lastTime = t;
 				}
