@@ -16,6 +16,17 @@
 	</style>
 	
 	<script>
+    // shim layer with setTimeout fallback
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })()
 
 	var uri = "ws://localhost:8000";
 	var circular_pixels = false; /* False for square */  
@@ -27,6 +38,7 @@
 	var frameCount;
 	var lastTime;
 	var interval;
+	var drawing = false;
     function message(str) {
         console.log(str);
 	}
@@ -59,12 +71,11 @@
 			console.log(">> WebSockets.onopen");
 			//echo_ref = setInterval(send_msg, echoDelay);
 			$D('connection').innerHTML = 'Status: connected';
-			var FPSgoal = 30;
 			interval = setInterval(function() {
 			  update();
-			  draw();
-			}, 1000/FPSgoal);
-			
+			}, 1000/30);
+			drawing = true;
+			draw();
 		});
 		ws.on('close', function(e) {
 			console.log(">> WebSockets.onclose");
@@ -77,6 +88,7 @@
 			clearInterval(interval);
 			blank();
 			setTimeout(connect, 3000);
+			drawing = false;
 		});
 		ws.on('error', function(e) {
 			console.log(">> WebSockets.onerror");
@@ -129,20 +141,23 @@
 					ctx.fillRect(x, y, pixelWidth, pixelHeight);
 				}
 			}
+			frameCount += 1;
+			if (drawing)
+				requestAnimFrame(draw);
 			
 		}
 
 		update=function(){
-				if (frameCount == 30) {
+				if (frameCount >= 30) {
+					var fc = frameCount;
 					frameCount = 0;
 					var t = (new Date).getTime();
 					var dt = t - lastTime;
-					var fr = 30 / (dt / 1000.0);
+					var fr = fc / (dt / 1000.0);
 					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
 
 					lastTime = t;
 				}
-				frameCount += 1;
 		}
 	
 	}
