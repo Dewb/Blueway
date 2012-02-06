@@ -2,8 +2,8 @@
 # above line for unix only
 
 import optparse, time, sys
-from web_display import *
-#from teh_display import *
+from lighting.display.web.web_display import *
+#from lighting.display.teh_display import *
 from numpy import ones, zeros
 
 if __name__ == '__main__':
