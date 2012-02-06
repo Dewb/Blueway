@@ -20,7 +20,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from websocket import WebSocketServer
 from multiprocessing import Queue
 from Queue import Empty
-from lighting.config import CONFIG
+from config import CONFIG
 
 class WebScreen:
     size = []
@@ -116,8 +116,9 @@ class WebSocketRenderer(WebSocketServer):
     def __init__(self,screen,args):
         self.screen = screen
         WebSocketServer.__init__(self,**args)
-    def main_loop_callback(self):
-        self.screen.render()
+
+#    def main_loop_callback(self):
+#        self.screen.render()
         
     def send_all(self,data):
         toremove = []
@@ -150,19 +151,15 @@ class WebSocketRenderer(WebSocketServer):
         c_pend = 0
         cpartial = ""
         rlist = [self.client]
-        self.last = None
 
         while active.value != -1:
             #self.screen.update_dummy_screen()
             #self.screen.render()
             try:
                 next = gqueue.get(False)
-                self.last = next
                 cqueue.append(next)
             except Empty:
                 pass
-                if self.last:
-                    cqueue.append(self.last)
             except Exception:
                 _, exc, _ = sys.exc_info()
                 self.msg("queue read exception: %s" % str(exc))

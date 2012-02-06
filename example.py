@@ -2,8 +2,7 @@
 # above line for unix only
 
 import optparse, time, sys
-from lighting.display.web.web_display import *
-#from lighting.display.teh_display import *
+from display.route_display import *
 from numpy import ones, zeros
 
 if __name__ == '__main__':
@@ -19,7 +18,7 @@ if __name__ == '__main__':
 
 	data = ones([150,4])*255
 	while loopCount < 150:
-		teh_display(data)
+		route_display(data)
 		time.sleep((opts.delay or 500)/1000.)
 		data[loopCount] = 0 
 		print loopCount

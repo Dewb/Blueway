@@ -2,7 +2,7 @@
 
 import socket
 import sys
-from lighting.display import colormap
+from display import colormap
 from random import random as randomF
 from numpy import shape,zeros,minimum,maximum,ravel,array,ones
 
@@ -75,6 +75,7 @@ def imdisplay(data,socks,mapping):
      p=display(data[:,i+1],socks[i],2)
      px[i*50+100:i*50+150,:]=p
    screen.update(px)
+   screen.render()
    
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
@@ -87,12 +88,13 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
       px[i*50+100:i*50+150,:]=p
 #      s.setup_screen([0,0,x_space*50*sz,y_space*2],lc)   
     screen.update(px)
+    screen.update()
 
      
-def teh_displayi(data,CM=colormap.MATLAB_COLORMAP):
+def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
  	imdisplayi(data,sockets,mapping,CM);
 
-def teh_display(data):
+def route_display(data):
  	imdisplay(data,sockets,mapping);
 
 
