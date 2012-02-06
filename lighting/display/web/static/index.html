@@ -61,7 +61,6 @@
 			$D('connection').innerHTML = 'Status: connected';
 			var FPSgoal = 30;
 			interval = setInterval(function() {
-			  update();
 			  draw();
 			}, 1000/FPSgoal);
 			
@@ -89,6 +88,8 @@
 			if (data['status'] == 'ok') {
 				frame = data['frame']
 				size = data['size']
+				update(frame.length);
+	
 			} else if (data['status'] == 'exiting') {
 				$D('framerate').innerHTML = '';
 				ws.close();
@@ -131,18 +132,21 @@
 			}
 			
 		}
-
-		update=function(){
+		var framesize = 0
+		update=function(len){
 				if (frameCount == 30) {
 					frameCount = 0;
 					var t = (new Date).getTime();
 					var dt = t - lastTime;
 					var fr = 30 / (dt / 1000.0);
-					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps';
-
+					var sz = framesize / 30;
+					$D('framerate').innerHTML = 'datarate: ' + fr.toFixed(2) + ' fps' +
+					'<br>avg num pixels: ' + sz.toFixed(0) + '<br> size: '+size.toString();
+					framesize = 0;
 					lastTime = t;
 				}
 				frameCount += 1;
+				framesize += len;
 		}
 	
 	}
