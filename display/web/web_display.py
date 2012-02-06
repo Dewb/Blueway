@@ -74,8 +74,7 @@ def imdisplay(data,socks,mapping):
      px[i*50:i*50+50,:]=p
      p=display(data[:,i+1],socks[i],2)
      px[i*50+100:i*50+150,:]=p
-   screen.update(px)
-   screen.render()
+   screen.render(px)
    
 
 def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
@@ -87,8 +86,7 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
       p=displayi(data[:,i+1],socks[i],2,CM)
       px[i*50+100:i*50+150,:]=p
 #      s.setup_screen([0,0,x_space*50*sz,y_space*2],lc)   
-    screen.update(px)
-    screen.update()
+    screen.render(px)
 
      
 def route_displayi(data,CM=colormap.MATLAB_COLORMAP):

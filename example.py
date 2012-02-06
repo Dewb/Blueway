@@ -21,7 +21,6 @@ if __name__ == '__main__':
 		route_display(data)
 		time.sleep((opts.delay or 500)/1000.)
 		data[loopCount] = 0 
-		print loopCount
 		loopCount += incrementor
 	print 'done'
 	sys.exit(0)

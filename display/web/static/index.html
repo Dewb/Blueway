@@ -37,7 +37,6 @@
 
 	var frameCount;
 	var dataCount;
-
 	var lastTime;
 	var interval;
 	var drawing = false;
@@ -51,7 +50,7 @@
 		blank();
 
 		frameCount = 0;
-		dataCount = 0;
+	    dataCount = 0;
 		lastTime = (new Date).getTime();
 		$D('connection').innerHTML = 'Status: disconnected';
 
@@ -97,45 +96,38 @@
 			console.log(">> WebSockets.onerror");
 		});
 		var frame =[];
-		var locations =[];
-
 		var size = [0,0,0,0];
 		handleMessage = function(data) {
 			var data = JSON.parse(data);
 			//window.data =data
 			if (data['status'] == 'ok') {
-				dataCount+=1;
-				frame = data['frame'];
-				size = data['size'];
-			} else if (data['status'] == 'setup') {
-				locations = data['frame'];
-				size = data['size'];
-				setup();
+	            dataCount+=1;
+				frame = data['frame']
+				size = data['size']
 			} else if (data['status'] == 'exiting') {
 				$D('framerate').innerHTML = '';
 				ws.close();
 			}
 		}
-		setup = function(){
-			console.log('setup received')
-		}
+		
 		draw = function(){
 			
-				blank();
-				var xo = size[0];
-				var xf = canvas.width / (size[2]-size[0]);
-				var yo = size[1];
-				var yf = canvas.height / (size[3]-size[1]);
-
-				var pixelWidth = xf;
-				var pixelHeight = yf;
-				var pixelRadius = Math.min(xf, yf) / 1.0;
 			
+			blank();
+			
+			var xo = size[0];
+			var xf = canvas.width / (size[2]-size[0]);
+			var yo = size[1];
+			var yf = canvas.height / (size[3]-size[1]);
+
+			var pixelWidth = xf;
+			var pixelHeight = yf;
+			var pixelRadius = Math.min(xf, yf) / 1.0;
 
 			for (var i = 0; i < frame.length; i++) {
 			    
-				var pos = locations[i];
-				var clr = frame[i];
+				var pos = frame[i][0];
+				var clr = frame[i][1];
 
 				var x = (pos[0] - xo) * xf;
 				var y = (pos[1] - yo) * yf;
@@ -159,19 +151,17 @@
 		}
 
 		update=function(){
-				if (frameCount >= 30) {
+				if (frameCount >= 60) {
 					var fc = frameCount;
 					frameCount = 0;
 					var dc = dataCount;
 					dataCount = 0;
-					
 					var t = (new Date).getTime();
 					var dt = t - lastTime;
 					var fr = fc / (dt / 1000.0);
 					var dr = dc / (dt / 1000.0);
-
 					$D('framerate').innerHTML = 'Framerate: ' + fr.toFixed(2) + ' fps' +
-					'<br> Datarate: '+dr.toFixed(2);
+                    '<br> Datarate: '+dr.toFixed(2)+'\tpackets/sec';
 
 					lastTime = t;
 				}
