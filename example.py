@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # above line for unix only
 
-import optparse, time
+import optparse, time, sys
 from web_display import *
 #from teh_display import *
 from numpy import ones, zeros
@@ -15,11 +15,14 @@ if __name__ == '__main__':
 		parser.error("incorrect number of arguments")	
 
   	incrementor = int(args[0])
-	loopCount = opts.start or 0
+	loopCount = opts.start or 0  #opts.start will be "None" if not specified
 
 	data = ones([150,4])*255
 	while loopCount < 150:
 		teh_display(data)
 		time.sleep((opts.delay or 500)/1000.)
 		data[loopCount] = 0 
+		print loopCount
 		loopCount += incrementor
+	print 'done'
+	sys.exit(0)
