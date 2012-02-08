@@ -13,7 +13,7 @@ if __name__ == '__main__':
 	if len(args) != 1:
 		parser.error("incorrect number of arguments")	
 
-  	incrementor = int(args[0])
+	incrementor = int(args[0])
 	loopCount = opts.start or 0  #opts.start will be "None" if not specified
 
 	data = ones([150,4])*255
