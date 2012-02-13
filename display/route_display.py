@@ -1,7 +1,10 @@
 from config import CONFIG
 
 if CONFIG.web:
-	from web.web_display import *
+    if CONFIG.file:
+	    from file.web_display import *
+    else:
+        from web.web_display import *
 else:
 	from display import *
 

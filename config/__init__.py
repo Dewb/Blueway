@@ -2,6 +2,7 @@ __author__ = 'mDan'
 
 class CONFIG:
 	web = True
+	file = True
 #	web = False
 	hostname = 'localhost'
 	listen_port = '8000'
