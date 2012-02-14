@@ -18,13 +18,11 @@ HTML_HEAD = """
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
-
   <!-- 
   <link rel="stylesheet" href="css/style.css">
   -->
 
-<META HTTP-EQUIV="Refresh" CONTENT="1">
+<META HTTP-EQUIV="Refresh" CONTENT=".1">
 </head>
 
 <body>
