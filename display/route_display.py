@@ -1,6 +1,8 @@
 from config import CONFIG, mapping, Ds
+import os
 
 if CONFIG.getMode() == "LIVE":
+    print "LIVE Mode!"
     from display import *
     sockets = make_sockets(Ds)
     def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
@@ -8,21 +10,23 @@ if CONFIG.getMode() == "LIVE":
     def route_display(data):
         imdisplay(data,sockets,mapping)
 else:
-#    import webbrowser
+    if CONFIG.openbrowser:
+        import webbrowser
     from sim_common import *    
     sockets = make_sockets(Ds);
 
     if CONFIG.getMode() == "WEB":
+        print "WebSocket Mode"
         from web import web_server
         screen=web_server.WebScreen()
-        # if CONFIG.openbrowser: 
-        #     webbrowser.open('http://localhost:8000/')
+        if CONFIG.openbrowser: 
+            webbrowser.open('http://localhost:8000/')
     if CONFIG.getMode() == "FILE":
         from file import sim_display
         screen=sim_display.FileScreen()
         print "File Mode"
-        # if CONFIG.openbrowser: 
-        #     webbrowser.open(os.getcwd()+'/LEDs.html')
+        if CONFIG.openbrowser: 
+            webbrowser.open(os.getcwd()+'/LEDs.html')
     locs = make_locs(sockets)
     screen.setup_screen([0,0,500,50],locs)
 

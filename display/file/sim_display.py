@@ -3,7 +3,7 @@
 #from numpy import shape,zeros,minimum,maximum,ravel;
 import sys
 from config import CONFIG
-fileRefresh = CONFIG.fileRefresh
+fileRefresh = CONFIG.pageRefresh
 HTML_HEAD = """
 <head>
   <meta charset="utf-8">

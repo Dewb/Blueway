@@ -1,17 +1,23 @@
 __author__ = 'mDan'
 
+MODES = ["FILE","WEB","LIVE"]
+
 class CONFIG:
      mode = 0 # 0=render to file,1=websocket, 2=live to lights
-     MODES = ["FILE","WEB","LIVE"]
-     fileRefresh = .5
-     
-     subnet='10.32.0.{0}'
-     
+
+     #sim settings
+     openbrowser = True
+     #file mode settings
+     pageRefresh = 0
+     #web socket settings
      hostname = 'localhost'
      listen_port = '8000'
+     #live settings
+     subnet='10.32.0.{0}'
+     
      @staticmethod
      def getMode():
-          return CONFIG.MODES[CONFIG.mode]
+          return MODES[CONFIG.mode]
 
 N = 50
 M = 24
