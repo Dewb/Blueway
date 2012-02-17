@@ -2,7 +2,7 @@
 
 import colormap
 from numpy import  zeros,minimum,maximum,ravel;
-from config import mapping, Ds
+from config import mapping, Ds, CONFIG
 from socket import socket,AF_INET,SOCK_DGRAM
 
 def connect(ip, port=6038):
@@ -11,7 +11,7 @@ def connect(ip, port=6038):
    return sock
 
 def make_sockets(Ds):
-    return [connect('10.32.0.{0}'.format(i)) for i in Ds];
+    return [connect(CONFIG.subnet.format(i)) for i in Ds];
 
 def display(data, sock, chan=1):
    xmit = zeros(174, 'ubyte')
