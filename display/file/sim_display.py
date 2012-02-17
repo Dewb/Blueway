@@ -2,7 +2,7 @@
 
 #from numpy import shape,zeros,minimum,maximum,ravel;
 import sys
-
+from config import fileRefresh
 HTML_HEAD = """
 <head>
   <meta charset="utf-8">
@@ -22,7 +22,7 @@ HTML_HEAD = """
   <link rel="stylesheet" href="css/style.css">
   -->
 
-<META HTTP-EQUIV="Refresh" CONTENT=".1">
+<META HTTP-EQUIV="Refresh" CONTENT="%f">
 </head>
 
 <body>
@@ -60,7 +60,7 @@ class FileScreen:
       self.dims = dimensions
       self.locs = locations
       print "setting up dimensions: "+str(self.dims)
-      self.HTML_HEAD_FILLED = HTML_HEAD%(self.dims[2]+100,self.dims[3])
+      self.HTML_HEAD_FILLED = HTML_HEAD%(fileRefresh,self.dims[2]+100,self.dims[3])
    def render(self,pixels):
            #sys.stdout.write("printing LEDs.html\n")
            f=open("LEDs.html", "w")
