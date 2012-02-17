@@ -16,7 +16,7 @@ if __name__ == '__main__':
      incrementor = int(args[0])
      loopCount = opts.start or 0  #opts.start will be "None" if not specified
 
-     data = ones([150,3])
+     data = ones([150,4])*1.00
      while loopCount < 150:
           route_display(data)
           time.sleep((opts.delay or 500)/1000.)

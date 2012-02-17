@@ -1,14 +1,35 @@
 from config import CONFIG, mapping, Ds
 
-if CONFIG.getMode() == "WEB":
-    from web.web_display import *
-elif CONFIG.getMode() == "FILE":
-    from file.web_display import *
+if CONFIG.getMode() == "LIVE":
+    from display import *
+    sockets = make_sockets(Ds)
+    def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
+        imdisplayi(data,sockets,mapping,CM)
+    def route_display(data):
+        imdisplay(data,sockets,mapping)
 else:
-     from display import *
-     sockets = make_sockets(Ds)
-     def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
-          imdisplayi(data,sockets,mapping,CM)
-     def route_display(data):
-          imdisplay(data,sockets,mapping)
+#    import webbrowser
+    from sim_common import *    
+    sockets = make_sockets(Ds);
+
+    if CONFIG.getMode() == "WEB":
+        from web import web_server
+        screen=web_server.WebScreen()
+        # if CONFIG.openbrowser: 
+        #     webbrowser.open('http://localhost:8000/')
+    if CONFIG.getMode() == "FILE":
+        from file import sim_display
+        screen=sim_display.FileScreen()
+        print "File Mode"
+        # if CONFIG.openbrowser: 
+        #     webbrowser.open(os.getcwd()+'/LEDs.html')
+    locs = make_locs(sockets)
+    screen.setup_screen([0,0,500,50],locs)
+
+    
+    def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
+        imdisplayi(data,sockets,mapping,screen,CM);
+
+    def route_display(data):
+        imdisplay(data,sockets,mapping,screen);
 
