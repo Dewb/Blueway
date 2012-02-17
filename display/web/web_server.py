@@ -115,7 +115,7 @@ class WebSocketRenderer(WebSocketServer):
               
     def send_all(self,data):
         toremove = []
-	#print len(self.queues)
+        #print len(self.queues)
         for i in range(len(self.queues)):
             q,active =self.queues[i]
             qmode = active.value
@@ -129,7 +129,7 @@ class WebSocketRenderer(WebSocketServer):
             elif qmode == 2:
                 pass
             else:
-		sys.exit(0)
+                sys.exit(0)
                 print "shouldn't happen"
                
         for i in range(len(toremove)):

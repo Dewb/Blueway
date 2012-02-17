@@ -88,10 +88,10 @@ def imdisplayi(data,socks,mapping,CM=colormap.MATLAB_COLORMAP):
 
      
 def route_displayi(data,CM=colormap.MATLAB_COLORMAP):
- 	imdisplayi(data,sockets,mapping,CM);
+     imdisplayi(data,sockets,mapping,CM);
 
 def route_display(data):
- 	imdisplay(data,sockets,mapping);
+     imdisplay(data,sockets,mapping);
 
 
 

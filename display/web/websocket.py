@@ -896,7 +896,7 @@ Sec-WebSocket-Accept: %s\r
                 if startsock:
                     startsock.close()
         print "killing all processes..."
-	for q,a in self.queues:
+        for q,a in self.queues:
              a.value = -1
 
 # HTTP handler with WebSocket upgrade support
