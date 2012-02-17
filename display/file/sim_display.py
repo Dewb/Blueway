@@ -2,7 +2,8 @@
 
 #from numpy import shape,zeros,minimum,maximum,ravel;
 import sys
-from config import fileRefresh
+from config import CONFIG
+fileRefresh = CONFIG.fileRefresh
 HTML_HEAD = """
 <head>
   <meta charset="utf-8">
