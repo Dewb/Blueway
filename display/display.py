@@ -2,7 +2,7 @@
 
 import colormap
 from numpy import  zeros,minimum,maximum,ravel;
-
+from config import mapping, Ds
 from socket import socket,AF_INET,SOCK_DGRAM
 
 def connect(ip, port=6038):
