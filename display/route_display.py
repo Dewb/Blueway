@@ -25,6 +25,7 @@ else:
         from file import sim_display
         screen=sim_display.FileScreen()
         print "File Mode"
+        print "warning, file mode will be deprecated soon. Download pygame if websockets don't work for you"
         if CONFIG.openbrowser: 
             webbrowser.open(os.getcwd()+'/LEDs.html')
     locs = make_locs(sockets)

@@ -1,13 +1,8 @@
 import os
 from numpy import *;
-
-def load_colormap(file):
-    return genfromtxt(file,delimiter=',');
+from config import CONFIG
 
 THIS_DIR = os.path.dirname(__file__)
-MATLAB_COLORMAP = load_colormap(os.path.join(THIS_DIR,'matlab.txt'))
-HSV_COLORMAP = load_colormap(os.path.join(THIS_DIR,'hsv.txt'))
-LINES_COLORMAP = load_colormap(os.path.join(THIS_DIR,'lines.txt'))
 
 # MATLAB_COLORMAP=zeros([64,3]);
 # MATLAB_COLORMAP[24:39,0] = linspace(0,1,15);
@@ -36,6 +31,19 @@ WHITE_COLORMAP=ones([64,3]);
 WHITE_COLORMAP[0:64,0] = linspace(0,1,64);
 WHITE_COLORMAP[0:64,1] = linspace(0,1,64);
 WHITE_COLORMAP[0:64,2] = linspace(0,1,64);
+
+if CONFIG.disableColormap:
+    MATLAB_COLORMAP = WHITE_COLORMAP
+    HSV_COLORMAP = WHITE_COLORMAP
+    LINES_COLORMAP = WHITE_COLORMAP
+else:
+    def load_colormap(file):
+        return genfromtxt(file,delimiter=',');
+
+    MATLAB_COLORMAP = load_colormap(os.path.join(THIS_DIR,'matlab.txt'))
+    HSV_COLORMAP = load_colormap(os.path.join(THIS_DIR,'hsv.txt'))
+    LINES_COLORMAP = load_colormap(os.path.join(THIS_DIR,'lines.txt'))
+
 
 def solid_colormap(r,g,b):
     CM=ones([64,3]);
