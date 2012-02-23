@@ -1,15 +1,16 @@
 from config import CONFIG
 import pygame
-#from pygame.locals import *si
+from pygame.locals import Color
 #import pdb
 from numpy import maximum,minimum
+import util.TimeOps as timeops
 
 class GameScreen:
     size = []
     locs = []
     pixels = []
-    
-    def __init__():
+    scale = None
+    def __init__(self):
         pygame.init()    
 
     def setup_screen(self,size,locs):
@@ -20,31 +21,23 @@ class GameScreen:
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(Color(0,0,0))
-#        self.stopwatch = timeops.Stopwatch()
-#        self.stopwatch.start()
+        self.stopwatch = timeops.Stopwatch()
+        self.stopwatch.start()
 
-    def render(self, px=None):
+    def render(self, px=None, currentTime=timeops.time()):
         if px != None:
-            self.pixels = px
-        #self.blit?
-
-
-
-class PygameRenderer(Renderer):
-    """PygameRenderer is a renderer which renders the LightSystem to a pygame display"""
-    
-    def render(self, lightSystem, currentTime=timeops.time()):
-        self.background.fill(Color(0,0,0))
-        if 'Scale' in self:
-            scale = self['Scale']
+            self.pixels = px    
+        if self.scale:
+            scale = self.scale
         else:
             scale = 1
-
-        for loc, value in lightSystem:
-	    if not(all(value == (0,0,0))):
+        for i in range(len(self.locs)):
+            loc = self.locs[i]
+            value = self.pixels[i]
+            if not(all(value == (0,0,0))):
             	pygame.draw.circle(self.background, value, loc*scale, scale)
         self.screen.blit(self.background, (0,0))
         pygame.display.flip()
         self.stopwatch.stop()
-        pygame.display.set_caption(str(int(1000/self.stopwatch.elapsed())))
+        pygame.display.set_caption("fps: "+str(int(1000/self.stopwatch.elapsed())))
         self.stopwatch.start()
