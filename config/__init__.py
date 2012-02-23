@@ -7,6 +7,7 @@ class CONFIG:
      mode = 1 # 0=render to file,1=websocket, 2=live to lights
      disableColormap = True
 
+
      #sim settings
      openbrowser = True
 
