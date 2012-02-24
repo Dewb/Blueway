@@ -19,6 +19,10 @@ class CONFIG:
 
      #live settings
      subnet='10.32.0.{0}'
+
+     #pygame setting
+     scale = 2 # None or 1 for smaller
+     margin = 10
      
      @staticmethod
      def getMode():

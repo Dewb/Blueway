@@ -1,25 +1,22 @@
 from config import CONFIG
-import pygame
+import pygame, sys
 from pygame.locals import Color
 #import pdb
-from numpy import maximum,minimum
+from numpy import maximum,minimum, array
 import util.TimeOps as timeops
-
-margin = 10
 
 class GameScreen:
     size = []
     locs = []
     pixels = []
-    scale = None
     def __init__(self):
         pygame.init()    
 
     def setup_screen(self,size,locs):
-        self.size = size
+        self.size = array(size)*CONFIG.scale
         self.locs = locs
         #size = (1000, 200)
-        self.screen = pygame.display.set_mode([size[2]+margin,size[3]])
+        self.screen = pygame.display.set_mode([self.size[2]+CONFIG.margin,self.size[3]])
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(Color(0,0,0))
@@ -32,14 +29,16 @@ class GameScreen:
 
         # David C's mod to prevent queue overflow 
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
             lastevent = event
 
-        if self.scale:
-            scale = self.scale
+        if CONFIG.scale:
+            scale = CONFIG.scale
         else:
             scale = 1
         for i in range(len(self.locs)):
-            loc = self.locs[i]
+            loc = array(self.locs[i])
             value = self.pixels[i]
             if not(all(value == (0,0,0))):
             	pygame.draw.circle(self.background, value, loc*scale, scale)
