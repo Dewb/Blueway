@@ -4,7 +4,7 @@ MODES = ["FILE","WEB","LIVE","GAME"]
 
 class CONFIG:
      # general settings
-     mode = 3 # 0=render to file,1=websocket, 2=live to lights, 3=pygame
+     mode = 1 # 0=render to file,1=websocket, 2=live to lights, 3=pygame
      disableColormap = True
 
      #sim settings

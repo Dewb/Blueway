@@ -28,18 +28,26 @@ def combineColors(colors):
 def multiplyColor(color, percent):
     return safeColor([channel*(percent) for channel in color])
 
+#def floatToIntColor(rgb):
+#    rgb[0] = int(rgb[0]*256 + .5)
+#    rgb[1] = int(rgb[1]*256 + .5)
+#    rgb[2] = int(rgb[2]*256 + .5)
+#    return safeColor(rgb)
+
+
 def floatToIntColor(rgb):
-    rgb[0] = int(rgb[0]*256 + .5)
-    rgb[1] = int(rgb[1]*256 + .5)
-    rgb[2] = int(rgb[2]*256 + .5)
-    return safeColor(rgb)
+    a=(rgb*255+.5).round()
+    a[a>255] = 255
+    a[a<0] = 0
+    return a
+
 
 def randomBrightColor():
     hue = random.random()
     sat = random.random()/2.0 + .5
     val = 1.0
     hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
+    ret = array([hue, sat, val])
     return floatToIntColor(ret)
 
 def randomDimColor(value):
@@ -47,7 +55,7 @@ def randomDimColor(value):
     sat = random.random()/2.0 + .5
     val = value
     hue, sat, val = colorsys.hsv_to_rgb(hue, sat, val)
-    ret = [hue, sat, val]
+    ret = array([hue, sat, val])
     return floatToIntColor(ret)
 
 class Color(object):
