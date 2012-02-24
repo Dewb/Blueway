@@ -5,6 +5,8 @@ from pygame.locals import Color
 from numpy import maximum,minimum
 import util.TimeOps as timeops
 
+margin = 10
+
 class GameScreen:
     size = []
     locs = []
@@ -17,7 +19,7 @@ class GameScreen:
         self.size = size
         self.locs = locs
         #size = (1000, 200)
-        self.screen = pygame.display.set_mode(size[2:])
+        self.screen = pygame.display.set_mode([size[2]+margin,size[3]])
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(Color(0,0,0))
@@ -27,6 +29,11 @@ class GameScreen:
     def render(self, px=None, currentTime=timeops.time()):
         if px != None:
             self.pixels = px    
+
+        # David C's mod to prevent queue overflow 
+        for event in pygame.event.get():
+            lastevent = event
+
         if self.scale:
             scale = self.scale
         else:
