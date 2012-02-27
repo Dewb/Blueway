@@ -173,6 +173,25 @@ class LightMatrix:
 
 # UTILITY METHODS
 #-------------------
+def minHueDist(hueBegin, hueEnd):
+     '''Helper function to return min distance between two hues, considering wrap-around.
+     eg:
+     .2, .4 -->  0.2
+     .4, .2 --> -0.2
+     .1, .9 --> -0.2  (not  0.8)
+     .9, .1 -->  0.2  (not -0.8)
+     '''
+     dist = hueEnd - hueBegin
+     
+     if (dist > 0.5):
+          return dist - 1
+     elif (dist < -0.5):
+          return dist + 1
+     else:
+          return dist
+     
+
+
 def colorTween(begin, end, pos = 0.5):
      """Returns an in-between ("tween") color tuple that is somewhere between begin and end, 
      as specified by pos
@@ -182,7 +201,8 @@ def colorTween(begin, end, pos = 0.5):
        e.g. a pos of 0.5 is exactly halfway between begin and end (in other words, the average),
             a pos of 0.0 returns begin, and a pos of 1.0 returns end
      returns a tweened tuple between begin and end"""
+     
      pos = max(0, min(1, pos)) # enforce limits on pos
-     return (begin[0] + (end[0] - begin[0]) * pos,
+     return (begin[0] + minHueDist(begin[0], end[0]) * pos,
              begin[1] + (end[1] - begin[1]) * pos,
              begin[2] + (end[2] - begin[2]) * pos) 
