@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 # Flip the LED strip like a twisting ribbon.
+# Michael Dewberry Feb 2012
+
 import optparse, time, sys, math, pdb
 from display.route_display import *
-from numpy import ones, zeros, ndenumerate, interp
+from numpy import ones, zeros, ndenumerate
 from copy import deepcopy
 from math import pi
 
-
-def fadeToBlack(data):
-	for position,value in ndenumerate(data):
-		data[position] = value*0.75
 
 def lerp(x, y, t):
 	return x+t*(y-x)
@@ -33,7 +31,6 @@ def cycleFlip(data, time, totalTime):
 		t = 1.0
 		if loop > time - width:
 			t = min(1.0, max(-1.0, 1.5*math.atan(0.1*(time-loop))/(2.0*pi)+0.5))
-		#pdb.set_trace()
 		out[loop:loop+3,:] = flip(out[loop:loop+3,:], t)
 		loop = loop + 3
 	return out		
@@ -51,10 +48,6 @@ if __name__ == '__main__':
 	secondphase = opts.second or 0	
 
 	data = ones([150,4])
-	#data[:,0] = (1.0, 1.0, 0)*50 
-	#data[:,1] = (1.0, 0, 0.5)*50 
-	#data[:,2] = (0.95, 0.5, 1.0)*50 
-	#data[:,3] = (0, 0.5, 1.0)*50
 	data[:,0] = (1.0, 0.0, 0)*50 
 	data[:,1] = (1.0, 0.0, 0.5)*50 
 	data[:,2] = (1.0, 1.0, 0.0)*50 

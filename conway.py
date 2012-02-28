@@ -13,18 +13,19 @@
 
 # If framesPerGeneration is more than 1, there's an opportunity to
 # animate the transitions.  Set fadeGenerations to 1 to do a simple
-# linear RGB fade (todo: replace with HSV fade) or use a combineFunc 
-# that produces different results for different values of gRenderFrame.
+# linear RGB fade or use a combineFunc that produces different results 
+# for different values of gRenderFrame.
+
+# Todo: 
+# - Change RGB fade to HSV fade
+# - Move gOptions to opts for command-line use
+# - Change hardcoded 48x50 world size to parameters
 
 import optparse, time, sys, math, pdb, numpy
 from display.route_display import *
 from copy import deepcopy
 from math import pi
 
-
-def fadeToBlack(data):
-	for position,value in ndenumerate(data):
-		data[position] = value*0.75
 
 def lerp(x, y, t):
 	return x+t*(y-x)
@@ -78,9 +79,17 @@ def initFn_randomWhite():
 	offset1 = numpy.random.randn(50,16) * 0.0005
 	offset2 = numpy.random.randn(50,16) * 0.0005
 	world[:,0:16] = plane
-	#world[:,16:32] = plane + offset1
+	world[:,16:32] = plane + offset1
 	world[:,32:48] = plane - offset2
 	return world
+	
+def initFn_randomPurple():
+	world = numpy.zeros([50,48])
+	plane = numpy.random.randn(50,16) * 0.5 + 0.5
+	offset = numpy.random.randn(50,16) * 0.0005
+	world[:,0:16] = plane
+	world[:,32:48] = plane - offset
+	return world	
 	
 def initFn_random():
 	world = numpy.random.randn(50,48) * 0.5 + 0.5
@@ -175,11 +184,9 @@ if __name__ == '__main__':
 	parser = optparse.OptionParser(usage="%prog [options] incrementor")
 	parser.add_option("--delay", action="store", type="int", help="set delay in milliseconds for each loop")
 	parser.add_option("--start", action="store", type="int", help="which channel to start the incrementor at")
+	parser.add_option("--resetgen", action="store", type="int", help="number of generations to run before restarting")
 	(opts, args) = parser.parse_args()
-	if len(args) != 1:
-		parser.error("incorrect number of arguments")     
-
-	incrementor = int(args[0])
+	
 	gGeneration = 0
 	gRenderFrame = 0
 	gOptions = { 'framesPerGeneration' : 6, 'fadeGenerations' : 1 } 
@@ -192,7 +199,7 @@ if __name__ == '__main__':
 	#life(initFn_randomWhite, runFn_continuousConway, combFn_sortFade, w2d_colorplanes, 50)	
 	#life(initFn_randomWhite, runFn_continuousConway, combFn_maxFade, w2d_colorplanes, 50)	
 
-	life(initFn_randomWhite, runFn_continuousConway, combFn_average, w2d_colorplanes, 50)	
+	life(initFn_randomPurple, runFn_continuousConway, combFn_average, w2d_colorplanes, opts.resetgen or 50)	
 
 	
 	sys.exit(0)
