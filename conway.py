@@ -1,5 +1,20 @@
 #!/usr/bin/env python
-# above line for unix only
+
+# Simple Conway's Game of Life implementation.
+# Michael Dewberry Feb 2012
+
+# Oversamples a 48x50 "world" and condenses the top third 
+# into the red channel, the middle into the green channel,
+# and the lower third into blue.  Four world cells are averaged
+# into each channel.
+
+# Almost all of the behaviors can be overridden by subsituting 
+# different function arguments into life().
+
+# If framesPerGeneration is more than 1, there's an opportunity to
+# animate the transitions.  Set fadeGenerations to 1 to do a simple
+# linear RGB fade (todo: replace with HSV fade) or use a combineFunc 
+# that produces different results for different values of gRenderFrame.
 
 import optparse, time, sys, math, pdb, numpy
 from display.route_display import *

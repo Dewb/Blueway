@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# above line for unix only
 
+# Flip the LED strip like a twisting ribbon.
 import optparse, time, sys, math, pdb
 from display.route_display import *
 from numpy import ones, zeros, ndenumerate, interp
@@ -26,7 +26,7 @@ def flip(column, t):
 	
 def cycleFlip(data, time, totalTime):
 	out = deepcopy(data)
-	width = 27 #opts.width or 28.0
+	width = opts.width or 28.0
 	curve = opts.curve or 1.5
 	loop = 0
 	while loop < time + width:
@@ -46,10 +46,7 @@ if __name__ == '__main__':
 	parser.add_option("--curve", action="store", type="float", help="Scaling factor controlling steepness of the arctan curve used for the flip. Default 1.5")
 	parser.add_option("--second", action="store", type="int", help="Set greater than zero to add a second flip. 0 means no flip; >0 means number of LEDs to delay second flip.")
 	(opts, args) = parser.parse_args()
-	if len(args) != 1:
-		parser.error("incorrect number of arguments")     
 
-	incrementor = int(args[0])
 	loopCount = opts.start or 0  #opts.start will be "None" if not specified
 	secondphase = opts.second or 0	
 
@@ -70,10 +67,10 @@ if __name__ == '__main__':
 			route_display(newdata)
 			time.sleep((opts.delay or 500)/1000.)
 		
-			#fadeToBlack(data)
 			newdata = cycleFlip(data, loopCount*1.0, 200.)
-			newdata = cycleFlip(newdata, loopCount*1.0-secondphase, 200.)
-			#newdata = cycleFlip(newdata, loopCount*1.0-150, 200.)
+			if secondphase > 0:
+				newdata = cycleFlip(newdata, loopCount*1.0-secondphase, 200.)
+	
 			loopCount = loopCount + 3
 		
 		data = deepcopy(newdata)
