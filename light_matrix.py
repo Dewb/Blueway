@@ -173,15 +173,15 @@ class LightMatrix:
 
 # UTILITY METHODS
 #-------------------
-def minHueDist(hueBegin, hueEnd):
-     '''Helper function to return min distance between two hues, considering wrap-around.
+def minWrapAround(begin, end):
+     '''Helper function to return min distance between two values, each [0,1], considering wrap-around.
      eg:
      .2, .4 -->  0.2
      .4, .2 --> -0.2
      .1, .9 --> -0.2  (not  0.8)
      .9, .1 -->  0.2  (not -0.8)
      '''
-     dist = hueEnd - hueBegin
+     dist = end - begin
      
      if (dist > 0.5):
           return dist - 1
@@ -192,17 +192,34 @@ def minHueDist(hueBegin, hueEnd):
      
 
 
-def colorTween(begin, end, pos = 0.5):
+def colorTweenHSV(begin, end, pos = 0.5):
      """Returns an in-between ("tween") color tuple that is somewhere between begin and end, 
      as specified by pos
      
-     begin and end can be either RGB or HSV tuples
+     begin and end are HSV tuples ([0] wraps around, [1] and [2] don't)
      pos is a number between 0 and 1 that determines the position of the tween from begin to end
        e.g. a pos of 0.5 is exactly halfway between begin and end (in other words, the average),
             a pos of 0.0 returns begin, and a pos of 1.0 returns end
      returns a tweened tuple between begin and end"""
      
      pos = max(0, min(1, pos)) # enforce limits on pos
-     return (begin[0] + minHueDist(begin[0], end[0]) * pos,
-             begin[1] + (end[1] - begin[1]) * pos,
+     return (begin[0] + minWrapAround(begin[0], end[0]) * pos, # hues can wrap around
+             begin[1] + (end[1] - begin[1]) * pos,          # sat and value don't
              begin[2] + (end[2] - begin[2]) * pos) 
+
+def colorTweenRGB(begin, end, pos = 0.5):
+     """Returns an in-between ("tween") color tuple that is somewhere between begin and end, 
+     as specified by pos
+     
+     begin and end are RGB tuples (the tween operates on the shortest distance from begin[i] to end[i],
+     including a wrap-around path).
+     
+     pos is a number between 0 and 1 that determines the position of the tween from begin to end
+       e.g. a pos of 0.5 is exactly halfway between begin and end (in other words, the average),
+            a pos of 0.0 returns begin, and a pos of 1.0 returns end
+     returns a tweened tuple between begin and end"""
+     
+     pos = max(0, min(1, pos)) # enforce limits on pos
+     return (begin[0] + minWrapAround(begin[0], end[0]) * pos, # all interpolations take min distance
+             begin[1] + minWrapAround(begin[1], end[1]) * pos, # including wrap-around
+             begin[2] + minWrapAround(begin[2], end[2]) * pos)
